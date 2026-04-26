@@ -1,65 +1,86 @@
-import Image from "next/image";
+'use client';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAppContext } from './context/AppContext';
+import { motion } from 'framer-motion';
 
-export default function Home() {
+export default function LoginScreen() {
+  const [phone, setPhone] = useState('');
+  const [otp, setOtp] = useState('');
+  const [businessName, setBusinessName] = useState('');
+  const { login } = useAppContext();
+  const router = useRouter();
+
+  const handleContinue = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await login(phone, businessName || 'My Business');
+    router.push('/dashboard');
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+    <div className="flex flex-col h-full bg-white p-6 justify-center">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="flex flex-col flex-1 mt-10"
+      >
+        <h1 className="text-2xl font-bold text-center mb-10 text-neutral-900 tracking-wider">LOGIN / SIGN UP</h1>
+        
+        <form onSubmit={handleContinue} className="space-y-6 flex-1">
+          <div>
+            <label className="block text-sm font-semibold text-neutral-800 mb-1">Phone number</label>
+            <input 
+              required
+              type="tel"
+              value={phone}
+              onChange={e => setPhone(e.target.value)}
+              className="w-full border border-gray-300 rounded-xl px-4 py-3 text-lg focus:outline-none focus:ring-4 focus:ring-[#0E472D]/20 focus:border-[#0E472D] transition-all bg-gray-50/50"
+              placeholder="Phone number"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          </div>
+          
+          <div>
+            <label className="block text-sm font-semibold text-neutral-800 mb-1">OTP verification</label>
+            <input 
+              type="text"
+              value={otp}
+              onChange={e => setOtp(e.target.value)}
+              className="w-full border border-gray-300 rounded-xl px-4 py-3 text-lg focus:outline-none focus:ring-4 focus:ring-[#0E472D]/20 focus:border-[#0E472D] transition-all bg-gray-50/50"
+              placeholder="OTP verification"
+            />
+            <p className="text-xs text-gray-400 mt-1">Request new password • receive via SMS</p>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-semibold text-neutral-800 mb-1">Business Name</label>
+            <input 
+              required
+              type="text"
+              value={businessName}
+              onChange={e => setBusinessName(e.target.value)}
+              className="w-full border border-gray-300 rounded-xl px-4 py-3 text-lg focus:outline-none focus:ring-4 focus:ring-[#0E472D]/20 focus:border-[#0E472D] transition-all bg-gray-50/50"
+              placeholder="Business Name"
+            />
+          </div>
+
+          <motion.button 
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.95 }}
+            type="submit" 
+            className="w-full mt-4 text-white font-bold text-lg py-4 rounded-[2rem] shadow-xl transition-all"
+            style={{ background: 'linear-gradient(135deg, #DFB981 0%, #B89565 100%)' }}
           >
-            Documentation
-          </a>
-        </div>
-      </main>
+            Continue
+          </motion.button>
+          
+          <div className="text-center mt-6">
+            <button type="button" className="text-sm font-medium text-neutral-600 hover:text-black">
+              Login or <span className="font-bold underline text-[#0E472D]">Create account</span>
+            </button>
+          </div>
+        </form>
+      </motion.div>
     </div>
   );
 }
