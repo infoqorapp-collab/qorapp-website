@@ -1,86 +1,119 @@
 'use client';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAppContext } from './context/AppContext';
 import { motion } from 'framer-motion';
+import Navbar from './components/ui/Navbar';
 
-export default function LoginScreen() {
-  const [phone, setPhone] = useState('');
-  const [otp, setOtp] = useState('');
-  const [businessName, setBusinessName] = useState('');
-  const { login } = useAppContext();
-  const router = useRouter();
-
-  const handleContinue = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await login(phone, businessName || 'My Business');
-    router.push('/dashboard');
-  };
-
+export default function LandingPage() {
   return (
-    <div className="flex flex-col h-full bg-white p-6 justify-center">
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className="flex flex-col flex-1 mt-10"
-      >
-        <h1 className="text-2xl font-bold text-center mb-10 text-neutral-900 tracking-wider">LOGIN / SIGN UP</h1>
-        
-        <form onSubmit={handleContinue} className="space-y-6 flex-1">
-          <div>
-            <label className="block text-sm font-semibold text-neutral-800 mb-1">Phone number</label>
-            <input 
-              required
-              type="tel"
-              value={phone}
-              onChange={e => setPhone(e.target.value)}
-              className="w-full border border-gray-300 rounded-xl px-4 py-3 text-lg focus:outline-none focus:ring-4 focus:ring-[#0E472D]/20 focus:border-[#0E472D] transition-all bg-gray-50/50"
-              placeholder="Phone number"
-            />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-semibold text-neutral-800 mb-1">OTP verification</label>
-            <input 
-              type="text"
-              value={otp}
-              onChange={e => setOtp(e.target.value)}
-              className="w-full border border-gray-300 rounded-xl px-4 py-3 text-lg focus:outline-none focus:ring-4 focus:ring-[#0E472D]/20 focus:border-[#0E472D] transition-all bg-gray-50/50"
-              placeholder="OTP verification"
-            />
-            <p className="text-xs text-gray-400 mt-1">Request new password • receive via SMS</p>
-          </div>
-          
-          <div>
-            <label className="block text-sm font-semibold text-neutral-800 mb-1">Business Name</label>
-            <input 
-              required
-              type="text"
-              value={businessName}
-              onChange={e => setBusinessName(e.target.value)}
-              className="w-full border border-gray-300 rounded-xl px-4 py-3 text-lg focus:outline-none focus:ring-4 focus:ring-[#0E472D]/20 focus:border-[#0E472D] transition-all bg-gray-50/50"
-              placeholder="Business Name"
-            />
-          </div>
+    <div className="flex flex-col min-h-screen font-sans bg-white text-slate-900">
+      <Navbar />
 
-          <motion.button 
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.95 }}
-            type="submit" 
-            className="w-full mt-4 text-white font-bold text-lg py-4 rounded-[2rem] shadow-xl transition-all"
-            style={{ background: 'linear-gradient(135deg, #DFB981 0%, #B89565 100%)' }}
-          >
-            Continue
-          </motion.button>
+      {/* SECTION 1: HERO */}
+      <header className="relative pt-16 pb-24 lg:pt-32 lg:pb-40 overflow-hidden bg-white flex-1">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           
-          <div className="text-center mt-6">
-            <button type="button" className="text-sm font-medium text-neutral-600 hover:text-black">
-              Login or <span className="font-bold underline text-[#0E472D]">Create account</span>
-            </button>
-          </div>
-        </form>
-      </motion.div>
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <div className="inline-block bg-blue-50 text-duma-blue px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-6 border border-blue-100">
+              Coming Soon: DUMA PAY RWANDA
+            </div>
+            <h1 className="hero-title mb-8">
+              Rwanda's Complete <br/>
+              <span className="text-duma-blue">Merchant Operating <br/> System</span>
+            </h1>
+            <p className="text-xl text-slate-600 mb-10 max-w-lg leading-relaxed">
+              A professional business banking and management platform for MSMEs. Fast, affordable, and secure tools to help you receive payments and track growth.
+            </p>
+            <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-10">
+              <a href="/login" className="px-10 py-4 bg-duma-green text-white text-center rounded-xl font-bold text-lg shadow-xl shadow-green-200 hover:bg-emerald-700 transition">
+                Onboard Now
+              </a>
+              <a href="#solutions" className="px-10 py-4 border-2 border-slate-200 text-slate-700 text-center rounded-xl font-bold text-lg hover:bg-slate-50 transition">
+                Explore Services
+              </a>
+            </div>
+            <div className="flex items-center space-x-3 text-slate-500">
+              <i className="fa-solid fa-building-columns text-duma-blue"></i>
+              <span className="text-sm font-semibold">Trusted by Rwanda's emerging businesses. Regulated by Central Bank of Rwanda.</span>
+            </div>
+          </motion.div>
+
+          <motion.div 
+            className="relative"
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            <div className="absolute -inset-4 bg-gradient-to-tr from-blue-50 to-green-50 rounded-[40px] blur-3xl opacity-50"></div>
+            <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?q=80&w=1000" className="relative rounded-[32px] shadow-2xl border-4 border-white" alt="Merchant POS" />
+          </motion.div>
+        </div>
+      </header>
+
+      {/* SECTION 2: SMART QR/USSD */}
+      <section id="solutions" className="py-24 lg:py-32 bg-slate-50 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <img src="https://images.unsplash.com/photo-1556742044-3c52d6e88c62?q=80&w=1000" className="rounded-3xl shadow-2xl" alt="QR Payments" />
+          </motion.div>
+          <motion.div 
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <h2 className="feature-title mb-6">Smart QR/USSD <br /> Payments</h2>
+            <p className="text-xl text-gray-600 mb-8 leading-relaxed">Accept payments instantly via mobile money or QR codes. Provide a seamless customer experience with DUMA PAY's instant confirmation.</p>
+            <ul className="space-y-4 benefit-list font-medium text-gray-700">
+              <li className="flex items-center space-x-3"><i className="fa-regular fa-circle-check"></i> <span>Accept MoMo, Visa, and Mastercard</span></li>
+              <li className="flex items-center space-x-3"><i className="fa-regular fa-circle-check"></i> <span>Instant USSD confirmation for customers</span></li>
+            </ul>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* SECTION 3: ANALYTICS */}
+      <section id="features" className="py-24 lg:py-32 bg-white overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+          <motion.div 
+            className="order-2 lg:order-1"
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <h2 className="feature-title mb-6">Real-Time Business <br /> Analytics</h2>
+            <p className="text-xl text-gray-600 mb-8 leading-relaxed">Daily and weekly sales reports to monitor your business growth. See your revenue clearly in one intuitive dashboard.</p>
+            <ul className="space-y-4 benefit-list font-medium text-gray-700">
+              <li className="flex items-center space-x-3"><i className="fa-regular fa-circle-check"></i> <span>Automatic sales tracking</span></li>
+              <li className="flex items-center space-x-3"><i className="fa-regular fa-circle-check"></i> <span>Growth forecasting tools</span></li>
+            </ul>
+          </motion.div>
+          <motion.div 
+            className="order-1 lg:order-2"
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1000" className="rounded-3xl shadow-2xl" alt="Analytics" />
+          </motion.div>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="bg-pesa-navy text-white py-12 text-center">
+        <p className="text-sm opacity-50 uppercase tracking-widest">DUMA PAY RWANDA © 2026</p>
+      </footer>
     </div>
   );
 }

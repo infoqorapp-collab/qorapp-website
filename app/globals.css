@@ -1,26 +1,21 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-pesa-navy: #001a4d;
+  --color-duma-blue: #004aad;
+  --color-duma-green: #008751;
+  --font-sans: var(--font-inter), sans-serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: theme('colors.slate.50');
+}
+
+.hero-title { font-size: 3.8rem; line-height: 1.05; font-weight: 900; color: var(--color-pesa-navy); }
+.feature-title { font-size: 2.8rem; line-height: 1.1; font-weight: 800; color: var(--color-pesa-navy); }
+.benefit-list i { color: var(--color-duma-blue); font-size: 1.1rem; }
+
+@media (max-width: 768px) { 
+  .hero-title { font-size: 2.5rem; } 
+  .feature-title { font-size: 2rem; } 
 }
