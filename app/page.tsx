@@ -1,11 +1,11 @@
 'use client';
 import { motion } from 'framer-motion';
-import Navbar from './components/ui/Navbar';
+import PublicNavbar from './components/ui/PublicNavbar';
 
 export default function LandingPage() {
   return (
     <div className="flex flex-col min-h-screen font-sans bg-white text-slate-900">
-      <Navbar />
+      <PublicNavbar />
 
       {/* SECTION 1: HERO */}
       <header className="relative pt-16 pb-24 lg:pt-32 lg:pb-40 overflow-hidden bg-white flex-1">
@@ -18,7 +18,7 @@ export default function LandingPage() {
             transition={{ duration: 0.8 }}
           >
             <div className="inline-block bg-blue-50 text-duma-blue px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-6 border border-blue-100">
-              Coming Soon: DUMA PAY RWANDA
+              Coming Soon: QORAPP RWANDA
             </div>
             <h1 className="hero-title mb-8">
               Rwanda's Complete <br/>
@@ -72,10 +72,12 @@ export default function LandingPage() {
             transition={{ duration: 0.8 }}
           >
             <h2 className="feature-title mb-6">Smart QR/USSD <br /> Payments</h2>
-            <p className="text-xl text-gray-600 mb-8 leading-relaxed">Accept payments instantly via mobile money or QR codes. Provide a seamless customer experience with DUMA PAY's instant confirmation.</p>
+            <p className="text-xl text-gray-600 mb-8 leading-relaxed">Accept payments instantly via mobile money or QR codes. Customers pay using USSD or by scanning your QR code. Get confirmed in seconds.</p>
             <ul className="space-y-4 benefit-list font-medium text-gray-700">
-              <li className="flex items-center space-x-3"><i className="fa-regular fa-circle-check"></i> <span>Accept MoMo, Visa, and Mastercard</span></li>
-              <li className="flex items-center space-x-3"><i className="fa-regular fa-circle-check"></i> <span>Instant USSD confirmation for customers</span></li>
+              <li className="flex items-center space-x-3"><i className="fa-regular fa-circle-check"></i> <span>QR Code payments with instant confirmation</span></li>
+              <li className="flex items-center space-x-3"><i className="fa-regular fa-circle-check"></i> <span>USSD for customers without smartphones</span></li>
+              <li className="flex items-center space-x-3"><i className="fa-regular fa-circle-check"></i> <span>Mobile money integrations</span></li>
+              <li className="flex items-center space-x-3"><i className="fa-regular fa-circle-check"></i> <span>Fast settlements to your account</span></li>
             </ul>
           </motion.div>
         </div>
@@ -91,11 +93,13 @@ export default function LandingPage() {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="feature-title mb-6">Real-Time Business <br /> Analytics</h2>
-            <p className="text-xl text-gray-600 mb-8 leading-relaxed">Daily and weekly sales reports to monitor your business growth. See your revenue clearly in one intuitive dashboard.</p>
+            <h2 className="feature-title mb-6">Merchant Dashboard & <br /> Business Analytics</h2>
+            <p className="text-xl text-gray-600 mb-8 leading-relaxed">See your complete business at a glance. Daily sales reports, weekly performance tracking, and cash flow monitoring all in one place.</p>
             <ul className="space-y-4 benefit-list font-medium text-gray-700">
-              <li className="flex items-center space-x-3"><i className="fa-regular fa-circle-check"></i> <span>Automatic sales tracking</span></li>
-              <li className="flex items-center space-x-3"><i className="fa-regular fa-circle-check"></i> <span>Growth forecasting tools</span></li>
+              <li className="flex items-center space-x-3"><i className="fa-regular fa-circle-check"></i> <span>Daily sales reports & revenue tracking</span></li>
+              <li className="flex items-center space-x-3"><i className="fa-regular fa-circle-check"></i> <span>Weekly performance analysis</span></li>
+              <li className="flex items-center space-x-3"><i className="fa-regular fa-circle-check"></i> <span>Cash flow monitoring</span></li>
+              <li className="flex items-center space-x-3"><i className="fa-regular fa-circle-check"></i> <span>Business growth insights</span></li>
             </ul>
           </motion.div>
           <motion.div 
@@ -110,9 +114,38 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* SECTION 4: INVENTORY */}
+      <section className="py-24 lg:py-32 bg-slate-50 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <img src="https://images.unsplash.com/photo-1633613286991-611bcfb63bff?q=80&w=1000" className="rounded-3xl shadow-2xl" alt="Inventory" />
+          </motion.div>
+          <motion.div 
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <h2 className="feature-title mb-6">Smart Inventory <br /> Management</h2>
+            <p className="text-xl text-gray-600 mb-8 leading-relaxed">Track your stock in real-time. Get alerts when items are running low, and keep detailed purchase logs to manage your supply chain efficiently.</p>
+            <ul className="space-y-4 benefit-list font-medium text-gray-700">
+              <li className="flex items-center space-x-3"><i className="fa-regular fa-circle-check"></i> <span>Real-time product tracking</span></li>
+              <li className="flex items-center space-x-3"><i className="fa-regular fa-circle-check"></i> <span>Low stock alerts</span></li>
+              <li className="flex items-center space-x-3"><i className="fa-regular fa-circle-check"></i> <span>Purchase log history</span></li>
+              <li className="flex items-center space-x-3"><i className="fa-regular fa-circle-check"></i> <span>Inventory-to-sales integration</span></li>
+            </ul>
+          </motion.div>
+        </div>
+      </section>
+
       {/* FOOTER */}
       <footer className="bg-pesa-navy text-white py-12 text-center">
-        <p className="text-sm opacity-50 uppercase tracking-widest">DUMA PAY RWANDA © 2026</p>
+        <p className="text-sm opacity-50 uppercase tracking-widest">QORAPP RWANDA © 2026</p>
       </footer>
     </div>
   );

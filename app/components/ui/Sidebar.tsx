@@ -26,9 +26,22 @@ export default function Sidebar({ className = '', onClose }: SidebarProps) {
       <div className="p-6 flex justify-between items-center">
         <div>
           <Link href="/dashboard" onClick={onClose} className="flex items-center space-x-2 mb-2">
-            <span className="text-3xl font-black tracking-tighter italic">
-              duma<span className="text-red-500">pay</span>
-            </span>
+            <svg viewBox="0 0 230 50" xmlns="http://www.w3.org/2000/svg" width="120" height="26">
+              {/* Outer blue Q ring */}
+              <circle cx="25" cy="25" r="19" fill="#1A6AFF" />
+              {/* Inner white hole */}
+              <circle cx="25" cy="25" r="11.5" fill="#ffffff" />
+              {/* Arrow tail */}
+              <polygon points="29,31 41,43 35.5,43 23.5,31" fill="#1A6AFF" />
+              {/* Arrow tip notch */}
+              <polygon points="35.5,43 41,43 41,37.5" fill="#ffffff" />
+              {/* Wordmark */}
+              <text x="54" y="33"
+                fontFamily="'Helvetica Neue', Helvetica, Arial, sans-serif"
+                fontWeight="800" fontSize="22" letterSpacing="2.5" fill="#0C1B33">
+                QORAPP
+              </text>
+            </svg>
           </Link>
           <p className="text-xs uppercase tracking-widest text-emerald-400 font-bold opacity-80">Admin Portal</p>
         </div>

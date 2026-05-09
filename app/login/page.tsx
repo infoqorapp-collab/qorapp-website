@@ -1,26 +1,60 @@
 'use client';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAppContext } from '../context/AppContext';
 import { motion } from 'framer-motion';
-import Navbar from '../components/ui/Navbar';
+import PublicNavbar from '../components/ui/PublicNavbar';
 
 export default function LoginScreen() {
   const [phone, setPhone] = useState('');
   const [otp, setOtp] = useState('');
   const [businessName, setBusinessName] = useState('');
+  const [service, setService] = useState<string | null>(null);
+  const [isRegister, setIsRegister] = useState(false);
   const { login } = useAppContext();
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const serviceParam = searchParams.get('service');
+    const registerParam = searchParams.get('register');
+    if (serviceParam) setService(serviceParam);
+    if (registerParam) setIsRegister(true);
+  }, [searchParams]);
 
   const handleContinue = async (e: React.FormEvent) => {
     e.preventDefault();
     await login(phone, businessName || 'My Business');
-    router.push('/dashboard');
+    
+    // Redirect to appropriate page based on service
+    if (service) {
+      switch (service) {
+        case 'inventory':
+          router.push('/dashboard/inventory');
+          break;
+        case 'expenses':
+          router.push('/dashboard/expense');
+          break;
+        case 'analytics':
+          router.push('/dashboard/insights');
+          break;
+        case 'qr-ussd':
+          router.push('/dashboard/record-sale');
+          break;
+        case 'wallet':
+          router.push('/dashboard/wallet');
+          break;
+        default:
+          router.push('/dashboard/inventory');
+      }
+    } else {
+      router.push('/dashboard/inventory');
+    }
   };
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
-      <Navbar />
+      <PublicNavbar />
       
       <div className="flex-1 flex flex-col justify-center items-center p-6">
         <motion.div 
@@ -29,7 +63,17 @@ export default function LoginScreen() {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="w-full max-w-md"
         >
-          <h1 className="text-2xl font-bold text-center mb-10 text-pesa-navy tracking-wider">LOGIN / SIGN UP</h1>
+          <h1 className="text-2xl font-bold text-center mb-10 text-pesa-navy tracking-wider">
+            {isRegister ? 'CREATE ACCOUNT' : 'LOGIN / SIGN UP'}
+          </h1>
+          
+          {service && (
+            <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <p className="text-sm text-blue-600 font-semibold">
+                ✓ You're signing up to access <span className="capitalize">{service.replace('-', ' ')}</span>
+              </p>
+            </div>
+          )}
           
           <form onSubmit={handleContinue} className="space-y-6">
             <div>

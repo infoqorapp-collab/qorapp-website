@@ -8,7 +8,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "DUMA PAY | Rwanda's Merchant Operating System",
+  title: "QORAPP | Rwanda's Merchant Operating System",
   description: "A professional business banking and management platform for MSMEs.",
 };
 
