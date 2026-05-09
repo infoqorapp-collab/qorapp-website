@@ -1,11 +1,11 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAppContext } from '../context/AppContext';
 import { motion } from 'framer-motion';
 import PublicNavbar from '../components/ui/PublicNavbar';
 
-export default function LoginScreen() {
+function LoginForm() {
   const [phone, setPhone] = useState('');
   const [otp, setOtp] = useState('');
   const [businessName, setBusinessName] = useState('');
@@ -25,7 +25,7 @@ export default function LoginScreen() {
   const handleContinue = async (e: React.FormEvent) => {
     e.preventDefault();
     await login(phone, businessName || 'My Business');
-    
+
     // Redirect to appropriate page based on service
     if (service) {
       switch (service) {
@@ -55,9 +55,9 @@ export default function LoginScreen() {
   return (
     <div className="flex flex-col min-h-screen bg-white">
       <PublicNavbar />
-      
+
       <div className="flex-1 flex flex-col justify-center items-center p-6">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
@@ -66,7 +66,7 @@ export default function LoginScreen() {
           <h1 className="text-2xl font-bold text-center mb-10 text-pesa-navy tracking-wider">
             {isRegister ? 'CREATE ACCOUNT' : 'LOGIN / SIGN UP'}
           </h1>
-          
+
           {service && (
             <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
               <p className="text-sm text-blue-600 font-semibold">
@@ -74,11 +74,11 @@ export default function LoginScreen() {
               </p>
             </div>
           )}
-          
+
           <form onSubmit={handleContinue} className="space-y-6">
             <div>
               <label className="block text-sm font-semibold text-neutral-800 mb-1">Phone number</label>
-              <input 
+              <input
                 required
                 type="tel"
                 value={phone}
@@ -87,10 +87,10 @@ export default function LoginScreen() {
                 placeholder="Phone number"
               />
             </div>
-            
+
             <div>
               <label className="block text-sm font-semibold text-neutral-800 mb-1">OTP verification</label>
-              <input 
+              <input
                 type="text"
                 value={otp}
                 onChange={e => setOtp(e.target.value)}
@@ -99,10 +99,10 @@ export default function LoginScreen() {
               />
               <p className="text-xs text-gray-400 mt-1">Request new password • receive via SMS</p>
             </div>
-            
+
             <div>
               <label className="block text-sm font-semibold text-neutral-800 mb-1">Business Name</label>
-              <input 
+              <input
                 required
                 type="text"
                 value={businessName}
@@ -112,15 +112,15 @@ export default function LoginScreen() {
               />
             </div>
 
-            <motion.button 
+            <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.95 }}
-              type="submit" 
+              type="submit"
               className="w-full mt-4 bg-duma-green text-white font-bold text-lg py-4 rounded-[2rem] shadow-xl shadow-green-200 transition-all hover:bg-emerald-700"
             >
               Continue
             </motion.button>
-            
+
             <div className="text-center mt-6">
               <button type="button" className="text-sm font-medium text-neutral-600 hover:text-black">
                 Login or <span className="font-bold underline text-duma-green">Create account</span>
@@ -130,5 +130,20 @@ export default function LoginScreen() {
         </motion.div>
       </div>
     </div>
+  );
+}
+
+export default function LoginScreen() {
+  return (
+    <Suspense fallback={
+      <div className="flex flex-col min-h-screen bg-white">
+        <PublicNavbar />
+        <div className="flex-1 flex justify-center items-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-duma-green"></div>
+        </div>
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
   );
 }
