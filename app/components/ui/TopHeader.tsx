@@ -22,50 +22,68 @@ export default function TopHeader({ onMenuClick }: TopHeaderProps) {
   const capitalizedTitle = title.charAt(0).toUpperCase() + title.slice(1);
 
   return (
-    <header className="h-20 bg-white border-b border-gray-100 flex items-center justify-between px-4 md:px-6 sticky top-0 z-30">
-      <div className="flex items-center gap-4">
+    <header className="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-8 sticky top-0 z-30 shadow-sm">
+      <div className="flex items-center gap-4 flex-1">
         {/* Mobile menu button */}
-        <button onClick={onMenuClick} className="lg:hidden text-slate-500 hover:text-pesa-navy transition p-1">
-          <Menu size={28} />
+        <button 
+          onClick={onMenuClick} 
+          className="lg:hidden text-slate-600 hover:text-pesa-navy hover:bg-slate-100 transition-colors p-2 rounded-lg"
+        >
+          <Menu size={24} />
         </button>
 
         <div className="hidden sm:block">
-          <div className="text-sm font-bold text-slate-400 flex items-center gap-2">
+          <nav className="text-xs font-semibold text-slate-500 flex items-center gap-2 mb-1 uppercase tracking-wide">
             <span>Home</span>
-            <span>/</span>
+            <span className="text-slate-300">/</span>
             <span className="text-pesa-navy">{capitalizedTitle}</span>
-          </div>
-          <h1 className="text-xl font-black text-pesa-navy tracking-tight">{capitalizedTitle}</h1>
+          </nav>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">{capitalizedTitle}</h1>
         </div>
       </div>
 
-      <div className="flex items-center gap-4 md:gap-6">
-        <div className="relative hidden lg:block">
+      <div className="flex items-center gap-2 md:gap-4">
+        {/* Search Bar */}
+        <div className="relative hidden xl:block">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
           <input 
             type="text" 
             placeholder="Search..." 
-            className="pl-10 pr-4 py-2 bg-slate-50 border border-gray-200 rounded-full text-sm font-medium focus:outline-none focus:ring-2 focus:ring-duma-green/20 focus:border-duma-green transition w-64"
+            className="pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-duma-green/30 focus:border-duma-green transition-all w-72"
           />
         </div>
 
-        <div className="flex items-center gap-3 lg:border-l lg:border-gray-100 lg:pl-6">
-          <button className="relative p-2 text-slate-400 hover:text-pesa-navy transition rounded-full hover:bg-slate-50">
-            <Bell size={20} />
-            <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
+        {/* Action Items */}
+        <div className="flex items-center gap-1 md:gap-2 lg:border-l lg:border-slate-200 lg:pl-4 md:pl-4">
+          {/* Notifications */}
+          <button 
+            className="relative p-2.5 text-slate-600 hover:text-pesa-navy hover:bg-slate-100 transition-colors rounded-lg group"
+            title="Notifications"
+          >
+            <div className="relative">
+              <Bell size={20} />
+              <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white shadow-sm"></span>
+            </div>
+            <div className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-duma-green to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-full"></div>
           </button>
           
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-duma-blue text-white flex items-center justify-center font-bold shadow-sm">
+          {/* User Profile */}
+          <div className="flex items-center gap-3 px-2 py-1.5 rounded-lg hover:bg-slate-50 transition-colors cursor-pointer hidden md:flex">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-duma-blue to-duma-green text-white flex items-center justify-center font-bold text-lg shadow-md">
               {user?.businessName?.charAt(0) || 'S'}
             </div>
-            <div className="hidden md:block">
-              <p className="text-sm font-bold text-pesa-navy">{user?.businessName || 'My Shop'}</p>
-              <p className="text-xs font-semibold text-slate-400">Admin</p>
+            <div className="hidden lg:block">
+              <p className="text-sm font-semibold text-slate-900">{user?.businessName || 'My Shop'}</p>
+              <p className="text-xs text-slate-500">Admin Account</p>
             </div>
           </div>
 
-          <button onClick={handleLogout} className="ml-1 p-2 text-slate-400 hover:text-red-600 transition rounded-full hover:bg-red-50" title="Logout">
+          {/* Logout */}
+          <button 
+            onClick={handleLogout} 
+            className="p-2.5 text-slate-600 hover:text-red-600 hover:bg-red-50 transition-all rounded-lg"
+            title="Logout"
+          >
             <LogOut size={20} />
           </button>
         </div>

@@ -8,36 +8,47 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 py-4">
-      <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-        <Link href="/" className="flex items-center space-x-2">
-          <svg viewBox="0 0 230 50" xmlns="http://www.w3.org/2000/svg" width="180" height="40">
-            {/* Outer blue Q ring */}
-            <circle cx="25" cy="25" r="19" fill="#1A6AFF" />
-            {/* Inner white hole */}
-            <circle cx="25" cy="25" r="11.5" fill="#ffffff" />
-            {/* Arrow tail */}
-            <polygon points="29,31 41,43 35.5,43 23.5,31" fill="#1A6AFF" />
-            {/* Arrow tip notch */}
-            <polygon points="35.5,43 41,43 41,37.5" fill="#ffffff" />
-            {/* Wordmark */}
-            <text x="54" y="33"
-              fontFamily="'Helvetica Neue', Helvetica, Arial, sans-serif"
-              fontWeight="800" fontSize="22" letterSpacing="2.5" fill="#0C1B33">
-              QORAPP
-            </text>
-          </svg>
+    <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200 py-4 shadow-sm">
+      <div className="max-w-7xl mx-auto px-6 flex justify-between items-center h-16">
+        <Link href="/" className="flex items-center space-x-3 flex-shrink-0">
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-duma-blue to-duma-blue/80 flex items-center justify-center">
+            <svg viewBox="0 0 230 50" xmlns="http://www.w3.org/2000/svg" width="32" height="32">
+              {/* Outer blue Q ring */}
+              <circle cx="25" cy="25" r="19" fill="#ffffff" />
+              {/* Inner white hole */}
+              <circle cx="25" cy="25" r="11.5" fill="#1a6aff" />
+              {/* Arrow tail */}
+              <polygon points="29,31 41,43 35.5,43 23.5,31" fill="#ffffff" />
+              {/* Arrow tip notch */}
+              <polygon points="35.5,43 41,43 41,37.5" fill="#1a6aff" />
+            </svg>
+          </div>
+          <span className="text-2xl font-bold bg-gradient-to-r from-pesa-navy to-duma-blue bg-clip-text text-transparent">QORAPP</span>
         </Link>
 
         {/* Desktop Menu */}
-        <div className="hidden lg:flex items-center space-x-8 font-semibold text-pesa-navy text-sm">
-          <Link href="/#solutions" className="hover:text-duma-blue transition">Solutions</Link>
-          <Link href="/#features" className="hover:text-duma-blue transition">Features</Link>
-          <Link href="/login" className="px-6 py-2 border border-pesa-navy rounded font-bold hover:bg-slate-50 transition">
+        <div className="hidden lg:flex items-center space-x-1 font-semibold text-slate-700 text-sm">
+          <Link href="/#solutions" className="px-4 py-2 rounded-lg hover:text-pesa-navy hover:bg-slate-100 transition-all duration-200">
+            Solutions
+          </Link>
+          <Link href="/#features" className="px-4 py-2 rounded-lg hover:text-pesa-navy hover:bg-slate-100 transition-all duration-200">
+            Features
+          </Link>
+        </div>
+
+        {/* Desktop CTA Buttons */}
+        <div className="hidden lg:flex items-center gap-3">
+          <Link 
+            href="/login" 
+            className="px-6 py-2.5 border-2 border-pesa-navy text-pesa-navy rounded-lg font-semibold hover:bg-slate-50 transition-all duration-200 hover:shadow-md"
+          >
             Login
           </Link>
-          <Link href="/login" className="px-6 py-2 bg-duma-green text-white rounded font-bold hover:bg-emerald-700 transition">
-            Register
+          <Link 
+            href="/login" 
+            className="px-6 py-2.5 bg-gradient-to-r from-duma-green to-emerald-600 text-white rounded-lg font-semibold hover:shadow-lg hover:shadow-duma-green/20 transition-all duration-200 transform hover:scale-105"
+          >
+            Get Started
           </Link>
         </div>
 
@@ -45,7 +56,7 @@ export default function Navbar() {
         <div className="lg:hidden">
           <button 
             onClick={() => setIsOpen(!isOpen)} 
-            className="text-pesa-navy p-2 focus:outline-none"
+            className="text-pesa-navy p-2 hover:bg-slate-100 rounded-lg transition-colors"
           >
             {isOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
@@ -59,37 +70,37 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-white border-b border-gray-100 overflow-hidden"
+            className="lg:hidden bg-white border-b border-slate-200 overflow-hidden"
           >
-            <div className="px-6 py-4 flex flex-col space-y-4 font-semibold text-pesa-navy">
+            <div className="px-6 py-4 flex flex-col space-y-2 font-semibold text-slate-700">
               <Link 
                 href="/#solutions" 
                 onClick={() => setIsOpen(false)}
-                className="hover:text-duma-blue transition"
+                className="px-4 py-2.5 rounded-lg hover:text-pesa-navy hover:bg-slate-100 transition-all"
               >
                 Solutions
               </Link>
               <Link 
                 href="/#features" 
                 onClick={() => setIsOpen(false)}
-                className="hover:text-duma-blue transition"
+                className="px-4 py-2.5 rounded-lg hover:text-pesa-navy hover:bg-slate-100 transition-all"
               >
                 Features
               </Link>
-              <div className="pt-4 flex flex-col space-y-3 border-t border-gray-100">
+              <div className="pt-4 flex flex-col space-y-2 border-t border-slate-200">
                 <Link 
                   href="/login" 
                   onClick={() => setIsOpen(false)}
-                  className="px-6 py-3 border border-pesa-navy rounded text-center font-bold hover:bg-slate-50 transition"
+                  className="px-6 py-3 border-2 border-pesa-navy text-pesa-navy rounded-lg text-center font-bold hover:bg-slate-50 transition-all"
                 >
                   Login
                 </Link>
                 <Link 
                   href="/login" 
                   onClick={() => setIsOpen(false)}
-                  className="px-6 py-3 bg-red-600 text-white rounded text-center font-bold hover:bg-red-700 transition"
+                  className="px-6 py-3 bg-gradient-to-r from-duma-green to-emerald-600 text-white rounded-lg text-center font-bold transition-all hover:shadow-lg"
                 >
-                  Register
+                  Get Started
                 </Link>
               </div>
             </div>
@@ -98,4 +109,5 @@ export default function Navbar() {
       </AnimatePresence>
     </nav>
   );
+}
 }
