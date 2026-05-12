@@ -9,23 +9,23 @@ export default function GrowthPage() {
       title: 'Working Capital Loans',
       description: 'Get credit based on your sales history',
       details: 'Fast approval, flexible repayment terms, and no collateral required. Build credit history with every transaction.',
-      icon: '💰',
+      icon: 'fas fa-money-bill-wave',
       href: '/login?service=credit',
-      color: 'from-green-400 to-green-600'
+      color: 'from-pesa-navy to-slate-800'
     },
     {
       title: 'Merchant Savings Wallet',
       description: 'Save for your business future',
       details: 'Set aside profits automatically with interest-bearing savings. Emergency fund for unexpected business challenges.',
-      icon: '🏦',
+      icon: 'fas fa-piggy-bank',
       href: '/login?service=savings',
-      color: 'from-blue-400 to-blue-600'
+      color: 'from-pesa-navy to-slate-800'
     },
     {
       title: 'Financial Inclusion',
       description: 'Join Rwanda\'s digital economy',
       details: 'Build your digital business profile. Access tax visibility tools. Create formal business records for growth.',
-      icon: '📊',
+      icon: 'fas fa-chart-line',
       href: '/login?service=digital-footprint',
       color: 'from-purple-400 to-purple-600'
     }
@@ -72,7 +72,9 @@ export default function GrowthPage() {
                   
                   {/* Content */}
                   <div className="relative p-8 bg-white bg-opacity-95 h-full flex flex-col">
-                    <div className="text-5xl mb-4">{option.icon}</div>
+                    <div className="w-16 h-16 bg-gradient-to-br from-pesa-navy to-slate-800 rounded-2xl flex items-center justify-center mb-4">
+                      <i className={`${option.icon} text-2xl text-white`}></i>
+                    </div>
                     <h3 className="text-2xl font-bold text-slate-900 mb-2">{option.title}</h3>
                     <p className="text-slate-600 font-semibold mb-4">{option.description}</p>
                     <p className="text-slate-600 text-sm mb-8 flex-grow">{option.details}</p>
@@ -101,7 +103,7 @@ export default function GrowthPage() {
                 viewport={{ once: true }}
                 className="text-center"
               >
-                <div className="text-4xl font-bold text-green-600 mb-3">0.4%</div>
+                <div className="text-4xl font-bold text-pesa-navy mb-3">0.4%</div>
                 <p className="text-slate-600">Lowest transaction fees in Rwanda. No hidden charges.</p>
               </motion.div>
 
@@ -111,7 +113,7 @@ export default function GrowthPage() {
                 viewport={{ once: true }}
                 className="text-center"
               >
-                <div className="text-4xl font-bold text-blue-600 mb-3">3 Phases</div>
+                <div className="text-4xl font-bold text-pesa-navy mb-3">3 Phases</div>
                 <p className="text-slate-600">Payments today. Inventory & analytics tomorrow. Credit & savings coming.</p>
               </motion.div>
 

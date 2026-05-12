@@ -10,7 +10,7 @@ export default function QRUSSDPage() {
       
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="pt-20 pb-16 px-6 bg-gradient-to-br from-blue-50 to-white">
+        <section className="pt-20 pb-16 px-6 bg-gradient-to-br from-slate-50 to-white">
           <div className="max-w-4xl mx-auto text-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -25,7 +25,7 @@ export default function QRUSSDPage() {
               </p>
               <Link 
                 href="/login?service=qr-ussd"
-                className="inline-block px-8 py-3 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition"
+                className="inline-block px-8 py-3 bg-pesa-navy text-white rounded-lg font-bold hover:bg-slate-800 transition"
               >
                 Get Started with QR/USSD
               </Link>
@@ -90,7 +90,7 @@ export default function QRUSSDPage() {
         </section>
 
         {/* CTA */}
-        <section className="py-16 px-6 bg-blue-50">
+        <section className="py-16 px-6 bg-slate-50">
           <div className="max-w-2xl mx-auto text-center">
             <h2 className="text-3xl font-bold text-slate-900 mb-6">Ready to accept payments?</h2>
             <p className="text-lg text-slate-600 mb-8">
@@ -98,7 +98,7 @@ export default function QRUSSDPage() {
             </p>
             <Link 
               href="/login?service=qr-ussd"
-              className="inline-block px-8 py-3 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition"
+              className="inline-block px-8 py-3 bg-pesa-navy text-white rounded-lg font-bold hover:bg-slate-800 transition"
             >
               Sign Up & Get Started
             </Link>

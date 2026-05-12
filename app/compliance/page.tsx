@@ -24,7 +24,7 @@ export default function CompliancePage() {
         'SSL/TLS for all communications',
         'Regular security audits and penetration testing'
       ],
-      icon: '🔒'
+      icon: 'fas fa-shield-alt'
     },
     {
       title: 'GDPR Compliance',
@@ -35,7 +35,7 @@ export default function CompliancePage() {
         'Data processing agreements in place',
         'Privacy policy updated regularly'
       ],
-      icon: '🛡️'
+      icon: 'fas fa-user-shield'
     },
     {
       title: 'AML/KYC Compliance',
@@ -46,15 +46,15 @@ export default function CompliancePage() {
         'Regular AML audits',
         'Compliance with Rwanda Revenue Authority'
       ],
-      icon: '✅'
+      icon: 'fas fa-check-circle'
     }
   ];
 
   const certifications = [
-    { name: 'ISO 27001', image: '🏅' },
-    { name: 'CBR License', image: '🏦' },
-    { name: 'GDPR', image: '🌍' },
-    { name: 'AML Certified', image: '✓' }
+    { name: 'ISO 27001', icon: 'fas fa-certificate' },
+    { name: 'CBR License', icon: 'fas fa-university' },
+    { name: 'GDPR', icon: 'fas fa-globe' },
+    { name: 'AML Certified', icon: 'fas fa-check' }
   ];
 
   return (
@@ -95,7 +95,9 @@ export default function CompliancePage() {
                   transition={{ delay: index * 0.1 }}
                   className="text-center p-6 bg-white rounded-lg border border-gray-200"
                 >
-                  <div className="text-5xl mb-4">{cert.image}</div>
+                  <div className="w-16 h-16 bg-pesa-navy rounded-2xl flex items-center justify-center mb-4 mx-auto">
+                    <i className={`${cert.icon} text-2xl text-white`}></i>
+                  </div>
                   <p className="font-bold text-slate-900">{cert.name}</p>
                 </motion.div>
               ))}
@@ -116,7 +118,9 @@ export default function CompliancePage() {
                   transition={{ delay: index * 0.1 }}
                   className="p-8 border border-gray-200 rounded-lg hover:shadow-lg transition"
                 >
-                  <div className="text-5xl mb-4">{item.icon}</div>
+                  <div className="w-16 h-16 bg-pesa-navy rounded-2xl flex items-center justify-center mb-4">
+                    <i className={`${item.icon} text-2xl text-white`}></i>
+                  </div>
                   <h3 className="text-2xl font-bold text-slate-900 mb-3">{item.title}</h3>
                   <p className="text-slate-600 mb-6">{item.description}</p>
                   
@@ -124,7 +128,7 @@ export default function CompliancePage() {
                     {item.details.map((detail, i) => (
                       <li key={i} className="flex items-start text-slate-600 text-sm">
                         <span className="mr-3 mt-1">
-                          <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                          <svg className="w-5 h-5 text-pesa-navy" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                           </svg>
                         </span>
@@ -154,11 +158,11 @@ export default function CompliancePage() {
               
               <div className="grid md:grid-cols-3 gap-6 pt-6 border-t border-gray-200">
                 <div>
-                  <div className="text-3xl font-bold text-green-600 mb-2">99.9%</div>
+                  <div className="text-3xl font-bold text-pesa-navy mb-2">99.9%</div>
                   <p className="text-slate-600 text-sm">Uptime Guarantee</p>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold text-blue-600 mb-2">24/7</div>
+                  <div className="text-3xl font-bold text-pesa-navy mb-2">24/7</div>
                   <p className="text-slate-600 text-sm">Monitoring & Support</p>
                 </div>
                 <div>

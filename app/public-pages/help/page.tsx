@@ -44,8 +44,8 @@ export default function HelpPage() {
   ];
 
   const colorClasses = {
-    blue: 'from-blue-400 to-blue-600 text-blue-600',
-    green: 'from-green-400 to-green-600 text-green-600',
+    blue: 'from-pesa-navy to-slate-800 text-pesa-navy',
+    green: 'from-pesa-navy to-slate-800 text-pesa-navy',
     purple: 'from-purple-400 to-purple-600 text-purple-600'
   };
 
@@ -94,7 +94,7 @@ export default function HelpPage() {
                     {item.details.map((detail, i) => (
                       <li key={i} className="flex items-start text-slate-600 text-sm">
                         <span className="mr-3 mt-1">
-                          <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                          <svg className="w-5 h-5 text-pesa-navy" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                           </svg>
                         </span>
@@ -155,7 +155,7 @@ export default function HelpPage() {
         </section>
 
         {/* Contact CTA */}
-        <section className="py-16 px-6 bg-blue-50">
+        <section className="py-16 px-6 bg-slate-50">
           <div className="max-w-2xl mx-auto text-center">
             <h2 className="text-3xl font-bold text-slate-900 mb-6">Still have questions?</h2>
             <p className="text-lg text-slate-600 mb-8">
@@ -164,13 +164,13 @@ export default function HelpPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a 
                 href="mailto:support@QORAPP.rw"
-                className="inline-block px-8 py-3 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition"
+                className="inline-block px-8 py-3 bg-pesa-navy text-white rounded-lg font-bold hover:bg-slate-800 transition"
               >
                 Email Support
               </a>
               <a 
                 href="https://wa.me/250788000000"
-                className="inline-block px-8 py-3 border-2 border-blue-600 text-blue-600 rounded-lg font-bold hover:bg-blue-50 transition"
+                className="inline-block px-8 py-3 border-2 border-pesa-navy text-pesa-navy rounded-lg font-bold hover:bg-slate-50 transition"
               >
                 WhatsApp Us
               </a>

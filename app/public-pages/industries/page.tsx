@@ -10,14 +10,14 @@ export default function IndustriesPage() {
       description: 'Complete payment & inventory solution for retail stores',
       features: ['QR & USSD payments', 'Stock tracking', 'Daily sales reports'],
       href: '/login?service=retail',
-      color: 'bg-blue-600 hover:bg-blue-700'
+      color: 'bg-pesa-navy hover:bg-slate-800'
     },
     {
       name: 'Mini Markets',
       description: 'Affordable tools for small market operators',
       features: ['Easy payment collection', 'Quick inventory updates', 'Cash flow tracking'],
       href: '/login?service=mini-markets',
-      color: 'bg-green-600 hover:bg-green-700'
+      color: 'bg-pesa-navy hover:bg-slate-800'
     },
     {
       name: 'Salons & Barbershops',
@@ -93,7 +93,7 @@ export default function IndustriesPage() {
                     <ul className="space-y-2">
                       {industry.features.map((feature, i) => (
                         <li key={i} className="flex items-center text-slate-600">
-                          <span className="w-2 h-2 bg-blue-600 rounded-full mr-3"></span>
+                          <span className="w-2 h-2 bg-pesa-navy rounded-full mr-3"></span>
                           {feature}
                         </li>
                       ))}

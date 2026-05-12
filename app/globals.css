@@ -43,7 +43,7 @@ body {
   letter-spacing: 0;
 }
 
-.benefit-list i { color: var(--color-duma-blue); font-size: 1.1rem; }
+.benefit-list i { color: var(--qorapp-navy); font-size: 1.1rem; }
 
 .qorapp-public-nav {
   position: sticky;

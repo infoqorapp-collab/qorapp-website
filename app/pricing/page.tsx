@@ -81,7 +81,7 @@ export default function PricingPage() {
       
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="pt-20 pb-16 px-6 bg-gradient-to-br from-green-50 to-white">
+        <section className="pt-20 pb-16 px-6 bg-gradient-to-br from-slate-50 to-white">
           <div className="max-w-4xl mx-auto text-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -111,14 +111,14 @@ export default function PricingPage() {
                   transition={{ delay: index * 0.1 }}
                   className={`rounded-lg p-8 flex flex-col ${
                     plan.highlighted
-                      ? 'bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-2xl transform lg:scale-105'
+                      ? 'bg-gradient-to-br from-pesa-navy to-slate-800 text-white shadow-2xl transform lg:scale-105'
                       : 'bg-white border border-gray-200 hover:shadow-lg transition'
                   }`}
                 >
                   <h3 className={`text-2xl font-bold mb-2 ${plan.highlighted ? 'text-white' : 'text-slate-900'}`}>
                     {plan.name}
                   </h3>
-                  <p className={plan.highlighted ? 'text-green-100' : 'text-slate-600'}>
+                  <p className={plan.highlighted ? 'text-slate-100' : 'text-slate-600'}>
                     {plan.description}
                   </p>
                   
@@ -126,12 +126,12 @@ export default function PricingPage() {
                     <div className={`text-4xl font-bold ${plan.highlighted ? 'text-white' : 'text-slate-900'}`}>
                       {plan.price}
                     </div>
-                    <div className={plan.highlighted ? 'text-green-100' : 'text-slate-600'}>
+                    <div className={plan.highlighted ? 'text-slate-100' : 'text-slate-600'}>
                       {plan.period}
                     </div>
                   </div>
 
-                  <ul className={`space-y-3 flex-grow mb-8 ${plan.highlighted ? 'text-green-50' : 'text-slate-600'}`}>
+                  <ul className={`space-y-3 flex-grow mb-8 ${plan.highlighted ? 'text-slate-50' : 'text-slate-600'}`}>
                     {plan.features.map((feature, i) => (
                       <li key={i} className="flex items-start">
                         <span className="mr-3">✓</span>
@@ -144,8 +144,8 @@ export default function PricingPage() {
                     href={plan.ctaHref}
                     className={`block py-3 px-4 rounded-lg font-bold text-center transition ${
                       plan.highlighted
-                        ? 'bg-white text-green-600 hover:bg-green-50'
-                        : 'bg-green-600 text-white hover:bg-green-700'
+                        ? 'bg-white text-pesa-navy hover:bg-slate-50'
+                        : 'bg-gradient-to-r from-pesa-navy to-slate-800 text-white hover:bg-slate-900'
                     }`}
                   >
                     {plan.cta}
@@ -196,7 +196,7 @@ export default function PricingPage() {
         </section>
 
         {/* CTA */}
-        <section className="py-16 px-6 bg-green-50">
+        <section className="py-16 px-6 bg-slate-50">
           <div className="max-w-2xl mx-auto text-center">
             <h2 className="text-3xl font-bold text-slate-900 mb-6">Ready to get started?</h2>
             <p className="text-lg text-slate-600 mb-8">
@@ -204,7 +204,7 @@ export default function PricingPage() {
             </p>
             <Link 
               href="/login"
-              className="inline-block px-8 py-3 bg-green-600 text-white rounded-lg font-bold hover:bg-green-700 transition"
+              className="inline-block px-8 py-3 bg-gradient-to-r from-pesa-navy to-slate-800 text-white rounded-lg font-bold hover:bg-slate-900 transition"
             >
               Sign Up Now
             </Link>
