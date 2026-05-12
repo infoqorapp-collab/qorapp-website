@@ -85,15 +85,15 @@ body {
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  background: linear-gradient(135deg, var(--qorapp-blue), #1a6aff);
+  background: linear-gradient(135deg, var(--qorapp-navy), #0c1b33);
   display: grid;
   place-items: center;
-  color: var(--qorapp-blue);
+  color: var(--qorapp-navy);
   font-size: 14px;
   font-weight: 800;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(26, 106, 255, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 26, 77, 0.3);
   flex-shrink: 0;
 }
 
@@ -110,6 +110,7 @@ body {
   content: "Q";
   position: relative;
   z-index: 1;
+  color: var(--qorapp-navy);
 }
 
 .qorapp-logo-text {
@@ -117,7 +118,7 @@ body {
   font-size: 26px;
   font-weight: 800;
   letter-spacing: 1px;
-  background: linear-gradient(135deg, var(--qorapp-navy), var(--qorapp-blue));
+  background: linear-gradient(135deg, var(--qorapp-navy), #0c1b33);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

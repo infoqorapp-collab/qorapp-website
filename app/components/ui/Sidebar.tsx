@@ -27,12 +27,12 @@ export default function Sidebar({ className = '', onClose }: SidebarProps) {
       <div className="p-6 border-b border-slate-800/50">
         <div className="flex justify-between items-start">
           <Link href="/dashboard" onClick={onClose} className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-duma-blue to-duma-green flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-pesa-navy to-slate-900 flex items-center justify-center flex-shrink-0">
               <svg viewBox="0 0 230 50" xmlns="http://www.w3.org/2000/svg" width="24" height="24">
                 <circle cx="25" cy="25" r="19" fill="#ffffff" />
-                <circle cx="25" cy="25" r="11.5" fill="#1a6aff" />
+                <circle cx="25" cy="25" r="11.5" fill="#001a4d" />
                 <polygon points="29,31 41,43 35.5,43 23.5,31" fill="#ffffff" />
-                <polygon points="35.5,43 41,43 41,37.5" fill="#1a6aff" />
+                <polygon points="35.5,43 41,43 41,37.5" fill="#001a4d" />
               </svg>
             </div>
             <div>
