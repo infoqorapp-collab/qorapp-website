@@ -11,19 +11,19 @@ export default function Navbar() {
     <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200 py-4 shadow-sm">
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center h-16">
         <Link href="/" className="flex items-center space-x-3 flex-shrink-0">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-pesa-navy to-slate-900 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-duma-blue to-duma-blue/80 flex items-center justify-center">
             <svg viewBox="0 0 230 50" xmlns="http://www.w3.org/2000/svg" width="32" height="32">
-              {/* Outer pesa-navy Q ring */}
+              {/* Outer blue Q ring */}
               <circle cx="25" cy="25" r="19" fill="#ffffff" />
-              {/* Inner navy hole */}
-              <circle cx="25" cy="25" r="11.5" fill="#001a4d" />
+              {/* Inner blue hole */}
+              <circle cx="25" cy="25" r="11.5" fill="#1a6aff" />
               {/* Arrow tail */}
               <polygon points="29,31 41,43 35.5,43 23.5,31" fill="#ffffff" />
               {/* Arrow tip notch */}
-              <polygon points="35.5,43 41,43 41,37.5" fill="#001a4d" />
+              <polygon points="35.5,43 41,43 41,37.5" fill="#1a6aff" />
             </svg>
           </div>
-          <span className="text-2xl font-bold bg-gradient-to-r from-pesa-navy to-slate-800 bg-clip-text text-transparent">QORAPP</span>
+          <span className="text-2xl font-bold bg-gradient-to-r from-pesa-navy to-duma-blue bg-clip-text text-transparent">QORAPP</span>
         </Link>
 
         {/* Desktop Menu */}
