@@ -31,6 +31,8 @@ export default function Dashboard() {
     todaysSales,
     todaysProfit,
     walletBalance,
+    cashBalance,
+    mobileBankBalance,
     isLoading,
     logout,
     transactions,
@@ -190,7 +192,7 @@ export default function Dashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45 }}
-          className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6"
+          className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
         >
           <div className="rounded-2xl border border-white/5 bg-white/5 p-6 backdrop-blur-sm shadow-inner">
              <div className="flex justify-between items-start">
@@ -212,6 +214,34 @@ export default function Dashboard() {
              <h2 className={`mt-2 text-3xl font-black tracking-tight ${todaysProfit >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                {todaysProfit >= 0 ? '+' : '-'}$<CountUp end={Math.abs(todaysProfit)} duration={2.1} separator="," />
              </h2>
+          </div>
+
+          <div className="rounded-2xl border border-white/5 bg-white/5 p-6 backdrop-blur-sm shadow-inner">
+             <div className="flex justify-between items-start">
+               <div>
+                 <p className="text-sm font-bold text-slate-400">Cash Balance</p>
+                 <h2 className="mt-2 text-3xl font-black tracking-tight">
+                   $<CountUp end={cashBalance} duration={1.8} separator="," />
+                 </h2>
+               </div>
+               <div className="rounded-xl bg-blue-500/10 px-3 py-1.5 text-right flex items-center gap-1 text-sm font-bold text-blue-400">
+                 <Wallet size={16} />
+               </div>
+             </div>
+          </div>
+
+          <div className="rounded-2xl border border-white/5 bg-white/5 p-6 backdrop-blur-sm shadow-inner">
+             <div className="flex justify-between items-start">
+               <div>
+                 <p className="text-sm font-bold text-slate-400">Mobile Bank</p>
+                 <h2 className="mt-2 text-3xl font-black tracking-tight">
+                   $<CountUp end={mobileBankBalance} duration={1.8} separator="," />
+                 </h2>
+               </div>
+               <div className="rounded-xl bg-purple-500/10 px-3 py-1.5 text-right flex items-center gap-1 text-sm font-bold text-purple-400">
+                 <DollarSign size={16} />
+               </div>
+             </div>
           </div>
         </motion.div>
       </div>

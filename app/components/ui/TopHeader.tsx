@@ -74,7 +74,7 @@ export default function TopHeader({ onMenuClick }: TopHeaderProps) {
             </div>
             <div className="hidden lg:block">
               <p className="text-sm font-semibold text-slate-900">{user?.businessName || 'My Shop'}</p>
-              <p className="text-xs text-slate-500">Admin Account</p>
+              <p className="text-xs text-slate-500">Your Account</p>
             </div>
           </div>
 

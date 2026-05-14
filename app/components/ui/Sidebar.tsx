@@ -17,7 +17,7 @@ export default function Sidebar({ className = '', onClose }: SidebarProps) {
     { label: 'Transactions', href: '/transactions', icon: CreditCard },
     { label: 'Inventory', href: '/inventory', icon: Package },
     { label: 'Expenses', href: '/expense', icon: Receipt },
-    { label: 'Customers', href: '#', icon: Users },
+    { label: 'Profile', href: '/profile', icon: Users },
     { label: 'Settings', href: '#', icon: Settings },
   ];
 
@@ -37,7 +37,7 @@ export default function Sidebar({ className = '', onClose }: SidebarProps) {
             </div>
             <div>
               <div className="text-sm font-bold">QORAPP</div>
-              <div className="text-xs text-emerald-400 font-semibold">Admin</div>
+              <div className="text-xs text-emerald-400 font-semibold">Welcome</div>
             </div>
           </Link>
           {onClose && (
