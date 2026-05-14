@@ -6,12 +6,15 @@ import { motion } from 'framer-motion';
 import PublicNavbar from '../components/ui/PublicNavbar';
 
 function LoginForm() {
-  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [businessName, setBusinessName] = useState('');
   const [service, setService] = useState<string | null>(null);
   const [isRegister, setIsRegister] = useState(false);
-  const { login } = useAppContext();
+  const [isOtpSent, setIsOtpSent] = useState(false);
+  const [status, setStatus] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
+  const { sendOtp, verifyOtp } = useAppContext();
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -22,11 +25,7 @@ function LoginForm() {
     if (registerParam) setIsRegister(true);
   }, [searchParams]);
 
-  const handleContinue = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await login(phone, businessName || 'My Business');
-
-    // Redirect to appropriate page based on service
+  const redirectToDashboard = () => {
     if (service) {
       switch (service) {
         case 'inventory':
@@ -50,6 +49,54 @@ function LoginForm() {
     } else {
       router.push('/dashboard/inventory');
     }
+  };
+
+  const handleRequestOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) {
+      setStatus('Please enter a valid email address.');
+      return;
+    }
+
+    setIsProcessing(true);
+    setStatus('Sending OTP to your email...');
+
+    const result = await sendOtp(email);
+    if (result.error) {
+      setStatus(result.error);
+    } else {
+      setIsOtpSent(true);
+      setStatus(`OTP sent to ${email}. Copy the code from your inbox and paste it here.`);
+    }
+
+    setIsProcessing(false);
+  };
+
+  const handleVerifyOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!otp) {
+      setStatus('Please enter the code sent to your email.');
+      return;
+    }
+
+    setIsProcessing(true);
+    setStatus('Verifying OTP...');
+
+    const result = await verifyOtp(email, otp, businessName || 'My Business');
+    if (result.error) {
+      setStatus(result.error);
+      setIsProcessing(false);
+      return;
+    }
+
+    redirectToDashboard();
+  };
+
+  const handleContinue = (e: React.FormEvent) => {
+    if (isOtpSent) {
+      return handleVerifyOtp(e);
+    }
+    return handleRequestOtp(e);
   };
 
   return (
@@ -136,27 +183,15 @@ function LoginForm() {
 
           <form onSubmit={handleContinue} className="space-y-6">
             <div>
-              <label className="block text-sm font-semibold text-neutral-800 mb-1">Phone number</label>
+              <label className="block text-sm font-semibold text-neutral-800 mb-1">Email address</label>
               <input
                 required
-                type="tel"
-                value={phone}
-                onChange={e => setPhone(e.target.value)}
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
                 className="w-full border border-gray-300 rounded-xl px-4 py-3 text-lg focus:outline-none focus:ring-4 focus:ring-duma-green/20 focus:border-duma-green transition-all bg-gray-50/50"
-                placeholder="Phone number"
+                placeholder="you@example.com"
               />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-neutral-800 mb-1">OTP verification</label>
-              <input
-                type="text"
-                value={otp}
-                onChange={e => setOtp(e.target.value)}
-                className="w-full border border-gray-300 rounded-xl px-4 py-3 text-lg focus:outline-none focus:ring-4 focus:ring-duma-green/20 focus:border-duma-green transition-all bg-gray-50/50"
-                placeholder="OTP verification"
-              />
-              <p className="text-xs text-gray-400 mt-1">Request new password • receive via SMS</p>
             </div>
 
             <div>
@@ -171,20 +206,46 @@ function LoginForm() {
               />
             </div>
 
+            {isOtpSent && (
+              <div>
+                <label className="block text-sm font-semibold text-neutral-800 mb-1">OTP verification</label>
+                <input
+                  required
+                  type="text"
+                  value={otp}
+                  onChange={e => setOtp(e.target.value)}
+                  className="w-full border border-gray-300 rounded-xl px-4 py-3 text-lg focus:outline-none focus:ring-4 focus:ring-duma-green/20 focus:border-duma-green transition-all bg-gray-50/50"
+                  placeholder="Enter code from email"
+                />
+                <p className="text-xs text-gray-400 mt-1">
+                  We sent a one-time code to your email. Copy it from your inbox and paste it here.
+                </p>
+              </div>
+            )}
+
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.95 }}
               type="submit"
-              className="w-full mt-4 bg-gradient-to-r from-pesa-navy to-slate-800 text-white font-bold text-lg py-4 rounded-[2rem] shadow-xl shadow-slate-200 transition-all hover:bg-slate-900"
+              disabled={isProcessing}
+              className="w-full mt-4 bg-gradient-to-r from-pesa-navy to-slate-800 text-white font-bold text-lg py-4 rounded-[2rem] shadow-xl shadow-slate-200 transition-all hover:bg-slate-900 disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              Continue
+              {isOtpSent ? 'Verify OTP' : 'Send verification code'}
             </motion.button>
 
-            <div className="text-center mt-6">
-              <button type="button" className="text-sm font-medium text-neutral-600 hover:text-black">
-                Login or <span className="font-bold underline text-duma-green">Create account</span>
-              </button>
-            </div>
+            {isOtpSent && (
+              <div className="text-center mt-3">
+                <button
+                  type="button"
+                  onClick={handleRequestOtp}
+                  className="text-sm font-medium text-neutral-600 hover:text-black"
+                >
+                  Resend code
+                </button>
+              </div>
+            )}
+
+            {status && <p className="text-sm text-center text-slate-500 mt-3">{status}</p>}
           </form>
         </motion.div>
         </div>
