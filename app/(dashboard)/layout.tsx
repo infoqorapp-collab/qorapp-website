@@ -1,9 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Sidebar from '../components/ui/Sidebar';
 import TopHeader from '../components/ui/TopHeader';
 import { AnimatePresence, motion } from 'framer-motion';
+import { usePathname, useRouter } from 'next/navigation';
+import { useAppContext } from '../context/AppContext';
 
 export default function DashboardLayout({
   children,
@@ -11,6 +13,26 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { user, isLoading } = useAppContext();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.replace(`/login?next=${encodeURIComponent(pathname)}`);
+    }
+  }, [isLoading, pathname, router, user]);
+
+  if (isLoading || !user) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4 text-center">
+        <div>
+          <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-duma-green/20 border-t-duma-green" />
+          <p className="text-lg font-black text-pesa-navy">Checking your session...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen bg-slate-50 overflow-hidden font-sans text-slate-900">
