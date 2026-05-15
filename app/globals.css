@@ -12,6 +12,39 @@ body {
   background-color: theme('colors.slate.50');
 }
 
+* {
+  min-width: 0;
+}
+
+html {
+  text-size-adjust: 100%;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+.qorapp-dashboard-page {
+  width: 100%;
+  max-width: 1800px;
+  margin-inline: auto;
+}
+
+.qorapp-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+.qorapp-scrollbar::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.qorapp-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
 :root {
   --qorapp-navy: #001a4d;
   --qorapp-blue: #1a6aff;

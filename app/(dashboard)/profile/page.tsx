@@ -33,21 +33,27 @@ export default function ProfileScreen() {
     }
 
     try {
-      console.log('Calling RPC with code:', code);
       const { data, error } = await supabase
         .rpc('get_user_by_ref_code', { recipient_ref_code: code });
-      
-      console.log('RPC response:', { data, error });
 
-      if (error || !data || data.length === 0) {
+      if (error) {
+        setSendError(error.message);
+        setRecipientName('');
+        setIsOwnRecipient(false);
+        return;
+      }
+
+      if (!data || data.length === 0) {
         setRecipientName('');
         setIsOwnRecipient(false);
       } else {
         setRecipientName(data[0].business_name);
         setIsOwnRecipient(false);
+        setSendError('');
       }
     } catch (err) {
       console.error('RPC error:', err);
+      setSendError('Unable to check recipient code. Please try again.');
       setRecipientName('');
       setIsOwnRecipient(false);
     }
@@ -107,7 +113,7 @@ export default function ProfileScreen() {
     setSendError('');
     setSendSuccess('');
 
-    const result = await sendMoney(recipientCode, parseFloat(sendAmount), 'wallet', sendNote || 'Money transfer');
+    const result = await sendMoney(recipientCode, parseFloat(sendAmount), 'Mobile Money', sendNote || 'Money transfer');
 
     if (result.error) {
       setSendError(result.error);
@@ -139,10 +145,10 @@ export default function ProfileScreen() {
         <p className="text-neutral-500 font-medium mt-1">Manage your account and send/receive money.</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 lg:gap-8">
         {/* Wallet Balance Card */}
-        <div className="lg:col-span-1">
-          <div className="bg-pesa-navy rounded-[2rem] p-8 text-center text-white shadow-xl relative overflow-hidden h-full flex flex-col justify-center">
+        <div className="xl:col-span-1">
+          <div className="bg-pesa-navy rounded-3xl md:rounded-[2rem] p-5 sm:p-8 text-center text-white shadow-xl relative overflow-hidden h-full flex flex-col justify-center">
             <p className="text-sm font-bold opacity-80 mb-2 drop-shadow-sm uppercase tracking-widest text-duma-green">Wallet Balance</p>
             <motion.h2
               initial={{ scale: 0.9, opacity: 0 }}
@@ -189,9 +195,9 @@ export default function ProfileScreen() {
         </div>
 
         {/* Account Balances and Recent Activity */}
-        <div className="lg:col-span-2 space-y-8">
+        <div className="xl:col-span-2 space-y-6 lg:space-y-8">
           {/* Account Balances */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
               <div className="flex items-center gap-4">
                 <div className="p-3 bg-blue-100 rounded-xl">
@@ -218,7 +224,7 @@ export default function ProfileScreen() {
           </div>
 
           {/* Recent Transactions */}
-          <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+          <div className="bg-white rounded-3xl p-4 sm:p-6 lg:p-8 shadow-sm border border-gray-100">
             <h3 className="text-xl font-black text-pesa-navy mb-6">Recent Transactions</h3>
 
             <motion.div
@@ -235,18 +241,18 @@ export default function ProfileScreen() {
                   const Icon = isPositive ? ArrowDownLeft : ArrowUpRight;
                   return (
                     <motion.div variants={itemVariants} key={txn.id} className="flex items-center justify-between p-5 rounded-2xl hover:bg-slate-50 transition border border-transparent hover:border-gray-100">
-                      <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-4 min-w-0">
                         <div className={`p-3 rounded-xl ${isPositive ? 'bg-green-100 text-duma-green' : 'bg-red-50 text-red-600'}`}>
                           <Icon size={24} />
                         </div>
                         <div>
-                          <p className="font-bold text-neutral-900 text-lg">{txn.description}</p>
+                          <p className="font-bold text-neutral-900 text-base sm:text-lg truncate">{txn.description}</p>
                           <p className="text-sm font-medium text-gray-500">
                             {new Date(txn.created_at || new Date()).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                           </p>
                         </div>
                       </div>
-                      <div className={`font-black text-xl ${isPositive ? 'text-duma-green' : 'text-neutral-900'}`}>
+                      <div className={`font-black text-base sm:text-xl shrink-0 ${isPositive ? 'text-duma-green' : 'text-neutral-900'}`}>
                         {isPositive ? '+' : '-'}${Number(txn.amount).toLocaleString(undefined, {minimumFractionDigits: 2})}
                       </div>
                     </motion.div>
@@ -259,8 +265,8 @@ export default function ProfileScreen() {
       </div>
 
       {/* Send Money Modal */}
-      <div id="send-money-modal" className="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
-        <div className="bg-white rounded-3xl p-8 max-w-md w-full mx-4">
+      <div id="send-money-modal" className="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50 p-4 overflow-y-auto">
+        <div className="bg-white rounded-3xl p-5 sm:p-8 max-w-md w-full max-h-[calc(100vh-2rem)] overflow-y-auto qorapp-scrollbar">
           <h3 className="text-2xl font-black text-pesa-navy mb-6">Send Money</h3>
 
           {sendError && (
@@ -319,7 +325,7 @@ export default function ProfileScreen() {
             </div>
           </div>
 
-          <div className="flex gap-3 mt-6">
+          <div className="flex flex-col sm:flex-row gap-3 mt-6">
             <button
               onClick={() => {
                 document.getElementById('send-money-modal')?.classList.add('hidden');
@@ -343,8 +349,8 @@ export default function ProfileScreen() {
 
       {/* Confirmation Modal */}
       {showConfirmModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-3xl p-8 max-w-md w-full mx-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+          <div className="bg-white rounded-3xl p-5 sm:p-8 max-w-md w-full max-h-[calc(100vh-2rem)] overflow-y-auto qorapp-scrollbar">
             <h3 className="text-2xl font-black text-pesa-navy mb-6">Confirm Transfer</h3>
             
             <div className="space-y-4 mb-6">
@@ -366,7 +372,7 @@ export default function ProfileScreen() {
               )}
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <button
                 onClick={() => setShowConfirmModal(false)}
                 className="flex-1 py-3 px-4 border border-gray-300 rounded-lg text-gray-700 font-bold hover:bg-gray-50 transition-colors"

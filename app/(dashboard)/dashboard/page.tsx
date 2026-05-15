@@ -18,6 +18,7 @@ import { useRouter } from 'next/navigation';
 import CountUp from 'react-countup';
 import { motion } from 'framer-motion';
 import { LineChart, Line, XAxis, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { getDailySalesExpenseData, getTodaysTransactions } from '../../../lib/analytics';
 
 type AlertItem = {
   id: string;
@@ -38,11 +39,14 @@ export default function Dashboard() {
     transactions,
     inventory,
     user,
+    notifications,
+    markNotificationRead,
   } = useAppContext();
   const router = useRouter();
 
-  const salesTxns = transactions.filter((txn) => txn.type === 'sale');
-  const expenseTxns = transactions.filter((txn) => txn.type === 'expense');
+  const todaysTransactions = getTodaysTransactions(transactions);
+  const salesTxns = todaysTransactions.filter((txn) => txn.type === 'sale');
+  const expenseTxns = todaysTransactions.filter((txn) => txn.type === 'expense');
   const lowStockItems = inventory.filter((item) => item.stock < 50);
   const outOfStockItems = inventory.filter((item) => item.stock <= 0);
   const fullStockItems = inventory.filter((item) => item.stock >= 50);
@@ -52,7 +56,12 @@ export default function Dashboard() {
   const totalExpenses = expenseTxns.reduce((sum, txn) => sum + Number(txn.amount), 0);
   const totalStockUnits = inventory.reduce((sum, item) => sum + Number(item.stock || 0), 0);
   const profitMargin = todaysSales > 0 ? (todaysProfit / todaysSales) * 100 : 0;
-  const salesGrowth = todaysProfit >= 0 ? 12.4 : -4.6;
+  const salesVsExpensesData = getDailySalesExpenseData(transactions);
+  const yesterday = salesVsExpensesData[salesVsExpensesData.length - 2];
+  const today = salesVsExpensesData[salesVsExpensesData.length - 1];
+  const salesGrowth = yesterday?.sales
+    ? ((today.sales - yesterday.sales) / yesterday.sales) * 100
+    : today?.sales > 0 ? 100 : 0;
 
   const paymentMap = salesTxns.reduce<Record<string, number>>((acc, txn) => {
     const key = txn.payment_method || 'Other';
@@ -112,6 +121,19 @@ export default function Dashboard() {
     isPositive: txn.type === 'sale' || txn.type === 'transfer_in',
   }));
 
+  const notificationCards = notifications.slice(0, 4).map((notification) => ({
+    id: notification.id,
+    title: notification.title,
+    detail: notification.message,
+    tone: notification.is_read ? 'info' as const : notification.type === 'money_received' ? 'info' as const : 'warning' as const,
+    href: notification.href || '/notifications',
+    isDatabaseNotification: true,
+  }));
+
+  const visibleNotifications = notificationCards.length > 0
+    ? notificationCards
+    : alerts.map((alert) => ({ ...alert, href: '/notifications', isDatabaseNotification: false }));
+
   if (isLoading) {
     return <div className="flex h-screen items-center justify-center bg-slate-50 font-sans font-bold text-pesa-navy text-xl">Loading Dashboard...</div>;
   }
@@ -153,36 +175,25 @@ export default function Dashboard() {
     },
   ];
 
-  // Mock data for the chart
-  const salesVsExpensesData = [
-    { name: 'Mon', sales: 400, expenses: 240 },
-    { name: 'Tue', sales: 300, expenses: 139 },
-    { name: 'Wed', sales: 200, expenses: 980 },
-    { name: 'Thu', sales: 278, expenses: 390 },
-    { name: 'Fri', sales: 189, expenses: 480 },
-    { name: 'Sat', sales: 239, expenses: 380 },
-    { name: 'Sun', sales: 349, expenses: 430 },
-  ];
-
   return (
     <div className="w-full">
-      <div className="relative overflow-hidden rounded-[2rem] bg-pesa-navy p-8 text-white mb-8 shadow-xl">
+      <div className="relative overflow-hidden rounded-3xl md:rounded-[2rem] bg-pesa-navy p-4 sm:p-6 lg:p-8 text-white mb-6 lg:mb-8 shadow-xl">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(255,255,255,0.05),_transparent_40%),radial-gradient(circle_at_left,_rgba(255,255,255,0.02),_transparent_30%)]" />
 
-        <div className="relative flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-4 min-w-0">
             <div className="rounded-full bg-white/10 p-3 text-duma-green shadow-inner">
               <Wallet size={28} />
             </div>
             <div>
               <p className="text-xs uppercase tracking-[0.25em] text-slate-400 font-bold">Total Balance</p>
-              <h2 className="text-4xl font-black tracking-tight mt-1">
+              <h2 className="text-3xl sm:text-4xl font-black tracking-tight mt-1">
                 $<CountUp end={walletBalance} duration={1.6} decimals={2} separator="," />
               </h2>
             </div>
           </div>
-          <div className="flex gap-3">
-             <button onClick={() => router.push('/record-sale')} className="bg-duma-green hover:bg-emerald-600 transition-colors text-white rounded-full px-6 py-3 font-bold text-sm shadow-lg shadow-green-900/20">
+          <div className="flex gap-3 w-full sm:w-auto">
+             <button onClick={() => router.push('/record-sale')} className="w-full sm:w-auto bg-duma-green hover:bg-emerald-600 transition-colors text-white rounded-full px-6 py-3 font-bold text-sm shadow-lg shadow-green-900/20">
                + Record Sale
              </button>
           </div>
@@ -192,7 +203,7 @@ export default function Dashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45 }}
-          className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+          className="mt-8 grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-4 gap-4 lg:gap-6"
         >
           <div className="rounded-2xl border border-white/5 bg-white/5 p-6 backdrop-blur-sm shadow-inner">
              <div className="flex justify-between items-start">
@@ -204,7 +215,7 @@ export default function Dashboard() {
                </div>
                <div className="rounded-xl bg-green-500/10 px-3 py-1.5 text-right flex items-center gap-1 text-sm font-bold text-green-400">
                  <ArrowUpRight size={16} />
-                 {salesGrowth}%
+                 {salesGrowth.toFixed(1)}%
                </div>
              </div>
           </div>
@@ -246,7 +257,7 @@ export default function Dashboard() {
         </motion.div>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-4 gap-4 mb-6 lg:mb-8">
         {statCards.map((card, index) => {
           const Icon = card.icon;
           return (
@@ -270,12 +281,12 @@ export default function Dashboard() {
         })}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-8">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 lg:gap-8">
+        <div className="xl:col-span-2 space-y-6 lg:space-y-8">
           
           {/* Charts Section */}
-          <div className="rounded-[2rem] bg-white p-6 shadow-sm border border-gray-100">
-            <div className="flex justify-between items-center mb-6">
+          <div className="rounded-3xl md:rounded-[2rem] bg-white p-4 sm:p-6 shadow-sm border border-gray-100">
+            <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center mb-6">
               <h3 className="text-xl font-black text-pesa-navy">Sales vs Expenses</h3>
               <select className="bg-slate-50 border border-gray-200 text-sm font-bold rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-duma-green/20">
                 <option>Last 7 days</option>
@@ -294,13 +305,13 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="rounded-[2rem] bg-white p-6 shadow-sm border border-gray-100">
+          <div className="rounded-3xl md:rounded-[2rem] bg-white p-4 sm:p-6 shadow-sm border border-gray-100">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-black text-pesa-navy">Recent Activity</h3>
             </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
+            <div className="overflow-x-auto qorapp-scrollbar">
+              <table className="w-full min-w-[680px] text-left border-collapse">
                 <thead>
                   <tr className="border-b border-gray-100 text-xs font-black text-gray-400 uppercase tracking-widest">
                     <th className="pb-4 font-semibold">Transaction</th>
@@ -356,17 +367,27 @@ export default function Dashboard() {
         </div>
 
         <div className="space-y-8">
-          <div className="rounded-[2rem] bg-white p-6 shadow-sm border border-gray-100">
+          <div className="rounded-3xl md:rounded-[2rem] bg-white p-4 sm:p-6 shadow-sm border border-gray-100">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-black text-pesa-navy">Notifications</h3>
               <div className="rounded-full bg-duma-blue/10 px-3 py-1 text-xs font-black text-duma-blue">
-                {alerts.length} active
+                {notifications.filter((notification) => !notification.is_read).length || alerts.length} active
               </div>
             </div>
 
             <div className="space-y-3">
-              {alerts.map((alert) => (
-                <div key={alert.id} className={`rounded-2xl border p-4 ${alertToneClasses[alert.tone]}`}>
+              {visibleNotifications.map((alert) => (
+                <button
+                  key={alert.id}
+                  type="button"
+                  onClick={async () => {
+                    if (alert.isDatabaseNotification) {
+                      await markNotificationRead(alert.id);
+                    }
+                    router.push(alert.href);
+                  }}
+                  className={`w-full text-left rounded-2xl border p-4 transition hover:-translate-y-0.5 hover:shadow-sm ${alertToneClasses[alert.tone]}`}
+                >
                   <div className="flex items-start gap-3">
                     <div className="mt-0.5 rounded-full bg-white/80 p-2">
                       <Bell size={16} />
@@ -376,12 +397,12 @@ export default function Dashboard() {
                       <p className="mt-1 text-sm font-semibold opacity-90">{alert.detail}</p>
                     </div>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           </div>
 
-          <div className="rounded-[2rem] bg-white p-6 shadow-sm border border-gray-100">
+          <div className="rounded-3xl md:rounded-[2rem] bg-white p-4 sm:p-6 shadow-sm border border-gray-100">
             <h3 className="text-lg font-black text-pesa-navy mb-6">Inventory Watch</h3>
             <div className="space-y-3">
               {lowStockItems.length > 0 ? (
@@ -404,7 +425,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="rounded-[2rem] bg-white p-6 shadow-sm border border-gray-100">
+          <div className="rounded-3xl md:rounded-[2rem] bg-white p-4 sm:p-6 shadow-sm border border-gray-100">
             <h3 className="text-lg font-black text-pesa-navy mb-6">Payment Channels</h3>
             <div className="space-y-5">
               {paymentMix.length > 0 ? (

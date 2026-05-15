@@ -18,7 +18,7 @@ export default function Sidebar({ className = '', onClose }: SidebarProps) {
     { label: 'Inventory', href: '/inventory', icon: Package },
     { label: 'Expenses', href: '/expense', icon: Receipt },
     { label: 'Profile', href: '/profile', icon: Users },
-    { label: 'Settings', href: '#', icon: Settings },
+    { label: 'Settings', href: '/settings', icon: Settings },
   ];
 
   return (

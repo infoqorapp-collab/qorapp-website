@@ -35,7 +35,7 @@ export default function TransactionsScreen() {
       </div>
 
       <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
-        <div className="p-6 border-b border-gray-100 flex flex-col sm:flex-row gap-4 justify-between items-center bg-slate-50/50">
+        <div className="p-4 sm:p-6 border-b border-gray-100 flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center bg-slate-50/50">
           <div className="relative w-full sm:max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
             <input
@@ -46,8 +46,8 @@ export default function TransactionsScreen() {
               className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-duma-green/20 focus:border-duma-green transition-all shadow-sm"
             />
           </div>
-          <div className="flex items-center gap-3 w-full sm:w-auto">
-            <div className="bg-white border border-gray-200 rounded-xl px-3 py-2.5 flex items-center gap-2 shadow-sm w-full sm:w-auto">
+          <div className="flex items-center gap-3 w-full md:w-auto">
+            <div className="bg-white border border-gray-200 rounded-xl px-3 py-2.5 flex items-center gap-2 shadow-sm w-full md:w-auto">
               <Filter size={16} className="text-gray-400" />
               <select
                 value={filterType}
@@ -62,8 +62,8 @@ export default function TransactionsScreen() {
           </div>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+        <div className="overflow-x-auto qorapp-scrollbar">
+          <table className="w-full min-w-[760px] text-left border-collapse">
             <thead className="bg-slate-50/50">
               <tr className="border-b border-gray-100 text-xs font-black text-gray-400 uppercase tracking-widest">
                 <th className="py-4 px-6 font-semibold">Transaction details</th>
@@ -129,7 +129,7 @@ export default function TransactionsScreen() {
         </div>
         
         {filteredTransactions.length > 0 && (
-          <div className="p-4 border-t border-gray-100 bg-slate-50 flex items-center justify-between text-sm font-semibold text-gray-500">
+          <div className="p-4 border-t border-gray-100 bg-slate-50 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between text-sm font-semibold text-gray-500">
             <p>Showing {filteredTransactions.length} transaction{filteredTransactions.length !== 1 && 's'}</p>
             <div className="flex gap-2">
               <button disabled className="px-3 py-1.5 border border-gray-200 rounded-lg opacity-50 cursor-not-allowed">Previous</button>

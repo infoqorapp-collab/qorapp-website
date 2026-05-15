@@ -27,9 +27,9 @@ export default function ExpenseScreen() {
 
   return (
     <div className="max-w-7xl mx-auto w-full flex flex-col items-center">
-        <div className="w-full max-w-2xl bg-white rounded-[2rem] shadow-lg border border-gray-100 p-8">
+        <div className="w-full max-w-2xl bg-white rounded-3xl md:rounded-[2rem] shadow-lg border border-gray-100 p-5 sm:p-8">
           <div className="mb-8 text-center">
-            <h1 className="text-3xl font-black text-pesa-navy tracking-tight">Record Expense</h1>
+            <h1 className="text-2xl sm:text-3xl font-black text-pesa-navy tracking-tight">Record Expense</h1>
             <p className="text-neutral-500 font-medium mt-1">Track outgoing money to keep your books accurate.</p>
           </div>
 

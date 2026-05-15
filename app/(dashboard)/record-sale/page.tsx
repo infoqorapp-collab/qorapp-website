@@ -39,9 +39,9 @@ export default function RecordSaleScreen() {
           )}
         </AnimatePresence>
 
-        <div className="w-full max-w-2xl bg-white rounded-[2rem] p-8 shadow-lg border border-gray-100">
+        <div className="w-full max-w-2xl bg-white rounded-3xl md:rounded-[2rem] p-5 sm:p-8 shadow-lg border border-gray-100">
           <div className="mb-8 text-center">
-            <h1 className="text-3xl font-black text-pesa-navy tracking-tight">Record Sale</h1>
+            <h1 className="text-2xl sm:text-3xl font-black text-pesa-navy tracking-tight">Record Sale</h1>
             <p className="text-neutral-500 font-medium mt-1">Capture revenue and update your daily tracking.</p>
           </div>
           
@@ -71,7 +71,7 @@ export default function RecordSaleScreen() {
 
             <div>
               <label className="block text-sm font-bold text-neutral-800 mb-3">Payment Method</label>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <button
                   type="button"
                   onClick={() => setMethod('Cash')}

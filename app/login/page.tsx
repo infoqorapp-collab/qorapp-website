@@ -5,6 +5,12 @@ import { useAppContext } from '../context/AppContext';
 import { motion } from 'framer-motion';
 import PublicNavbar from '../components/ui/PublicNavbar';
 
+const OTP_MAX_SENDS = 2;
+const OTP_LOCK_MS = 2 * 60 * 1000;
+const OTP_TOKEN_LENGTH = 8;
+
+type OtpMode = 'login' | 'signup';
+
 function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -12,9 +18,13 @@ function LoginForm() {
   const [businessName, setBusinessName] = useState('');
   const [service, setService] = useState<string | null>(null);
   const [isRegister, setIsRegister] = useState(false);
+  const [otpToken, setOtpToken] = useState('');
+  const [isOtpStep, setIsOtpStep] = useState(false);
+  const [otpLockedUntil, setOtpLockedUntil] = useState(0);
+  const [now, setNow] = useState(Date.now());
   const [status, setStatus] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
-  const { signIn, signUp, user } = useAppContext();
+  const { signIn, signUp, verifyEmailOtp, user } = useAppContext();
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -24,6 +34,90 @@ function LoginForm() {
     if (serviceParam) setService(serviceParam);
     if (registerParam) setIsRegister(true);
   }, [searchParams]);
+
+  useEffect(() => {
+    if (!isOtpStep || otpLockedUntil <= Date.now()) return;
+
+    const timer = window.setInterval(() => {
+      setNow(Date.now());
+    }, 1000);
+
+    return () => window.clearInterval(timer);
+  }, [isOtpStep, otpLockedUntil]);
+
+  const formatWaitTime = (milliseconds: number) => {
+    const totalSeconds = Math.max(0, Math.ceil(milliseconds / 1000));
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+
+    if (!minutes) {
+      return `${seconds}s`;
+    }
+
+    return `${minutes}m ${seconds.toString().padStart(2, '0')}s`;
+  };
+
+  const getOtpLimitKey = (targetEmail: string, mode: OtpMode) => {
+    return `qorapp-otp-limit:${mode}:${targetEmail.trim().toLowerCase()}`;
+  };
+
+  const readOtpLimit = (targetEmail: string, mode: OtpMode) => {
+    if (typeof window === 'undefined') {
+      return { count: 0, lockedUntil: 0 };
+    }
+
+    const rawLimit = window.localStorage.getItem(getOtpLimitKey(targetEmail, mode));
+    if (!rawLimit) {
+      return { count: 0, lockedUntil: 0 };
+    }
+
+    try {
+      const parsed = JSON.parse(rawLimit) as { count?: number; lockedUntil?: number };
+      const lockedUntil = Number(parsed.lockedUntil || 0);
+
+      if (lockedUntil && lockedUntil <= Date.now()) {
+        window.localStorage.removeItem(getOtpLimitKey(targetEmail, mode));
+        return { count: 0, lockedUntil: 0 };
+      }
+
+      return {
+        count: Number(parsed.count || 0),
+        lockedUntil,
+      };
+    } catch {
+      window.localStorage.removeItem(getOtpLimitKey(targetEmail, mode));
+      return { count: 0, lockedUntil: 0 };
+    }
+  };
+
+  const canSendOtp = (targetEmail: string, mode: OtpMode) => {
+    const limit = readOtpLimit(targetEmail, mode);
+
+    if (limit.lockedUntil > Date.now()) {
+      setOtpLockedUntil(limit.lockedUntil);
+      setNow(Date.now());
+      setStatus(`Please wait ${formatWaitTime(limit.lockedUntil - Date.now())} before requesting another code.`);
+      return false;
+    }
+
+    return true;
+  };
+
+  const recordOtpSend = (targetEmail: string, mode: OtpMode) => {
+    if (typeof window === 'undefined') return;
+
+    const limit = readOtpLimit(targetEmail, mode);
+    const nextCount = limit.count + 1;
+    const lockedUntil = nextCount >= OTP_MAX_SENDS ? Date.now() + OTP_LOCK_MS : 0;
+
+    window.localStorage.setItem(
+      getOtpLimitKey(targetEmail, mode),
+      JSON.stringify({ count: nextCount, lockedUntil })
+    );
+
+    setOtpLockedUntil(lockedUntil);
+    setNow(Date.now());
+  };
 
   const redirectToDashboard = () => {
     if (service) {
@@ -64,6 +158,10 @@ function LoginForm() {
       return;
     }
 
+    if (!canSendOtp(email, 'login')) {
+      return;
+    }
+
     setIsProcessing(true);
     setStatus('Signing in...');
 
@@ -74,7 +172,10 @@ function LoginForm() {
       return;
     }
 
-    redirectToDashboard();
+    recordOtpSend(email, 'login');
+    setIsOtpStep(true);
+    setStatus('We sent a verification code to your email.');
+    setIsProcessing(false);
   };
 
   const handleSignUp = async (e: React.FormEvent) => {
@@ -94,6 +195,10 @@ function LoginForm() {
       return;
     }
 
+    if (!canSendOtp(email, 'signup')) {
+      return;
+    }
+
     setIsProcessing(true);
     setStatus('Creating your account...');
 
@@ -104,7 +209,57 @@ function LoginForm() {
       return;
     }
 
+    recordOtpSend(email, 'signup');
+    setIsOtpStep(true);
+    setStatus('We sent a verification code to your email.');
+    setIsProcessing(false);
+  };
+
+  const handleVerifyOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!otpToken.trim()) {
+      setStatus('Please enter the verification code from your email.');
+      return;
+    }
+
+    setIsProcessing(true);
+    setStatus('Verifying code...');
+
+    const result = await verifyEmailOtp(email, otpToken);
+
+    if (result.error) {
+      setStatus(result.error);
+      setIsProcessing(false);
+      return;
+    }
+
     redirectToDashboard();
+  };
+
+  const handleResendOtp = async () => {
+    const mode: OtpMode = isRegister ? 'signup' : 'login';
+
+    if (!canSendOtp(email, mode)) {
+      return;
+    }
+
+    setIsProcessing(true);
+    setStatus('Sending a new code...');
+
+    const result = isRegister
+      ? await signUp(email, password, businessName || 'My Business', phone)
+      : await signIn(email, password);
+
+    if (result.error) {
+      setStatus(result.error);
+      setIsProcessing(false);
+      return;
+    }
+
+    recordOtpSend(email, mode);
+    setOtpToken('');
+    setStatus('A new verification code was sent to your email.');
+    setIsProcessing(false);
   };
 
   const handleContinue = (e: React.FormEvent) => {
@@ -114,6 +269,8 @@ function LoginForm() {
 
     return handleSignIn(e);
   };
+
+  const resendWaitMs = Math.max(0, otpLockedUntil - now);
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
@@ -186,7 +343,7 @@ function LoginForm() {
             className="w-full max-w-md"
           >
           <h1 className="text-2xl font-bold text-center mb-10 text-pesa-navy tracking-wider">
-            {isRegister ? 'CREATE ACCOUNT' : 'LOGIN / SIGN UP'}
+            {isOtpStep ? 'VERIFY EMAIL' : isRegister ? 'CREATE ACCOUNT' : 'LOGIN / SIGN UP'}
           </h1>
 
           {service && (
@@ -197,56 +354,87 @@ function LoginForm() {
             </div>
           )}
 
-          <form onSubmit={handleContinue} className="space-y-6">
-            <div>
-              <label className="block text-sm font-semibold text-neutral-800 mb-1">Email address</label>
-              <input
-                required
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                className="w-full border border-gray-300 rounded-xl px-4 py-3 text-lg focus:outline-none focus:ring-4 focus:ring-duma-green/20 focus:border-duma-green transition-all bg-gray-50/50"
-                placeholder="you@example.com"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-neutral-800 mb-1">Password</label>
-              <input
-                required
-                type="password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                className="w-full border border-gray-300 rounded-xl px-4 py-3 text-lg focus:outline-none focus:ring-4 focus:ring-duma-green/20 focus:border-duma-green transition-all bg-gray-50/50"
-                placeholder="Enter password"
-              />
-            </div>
-
-            {isRegister && (
+          <form onSubmit={isOtpStep ? handleVerifyOtp : handleContinue} className="space-y-6">
+            {isOtpStep ? (
               <>
                 <div>
-                  <label className="block text-sm font-semibold text-neutral-800 mb-1">Phone number</label>
+                  <label className="block text-sm font-semibold text-neutral-800 mb-1">Verification code</label>
                   <input
                     required
-                    type="tel"
-                    value={phone}
-                    onChange={e => setPhone(e.target.value)}
+                    inputMode="numeric"
+                    autoComplete="one-time-code"
+                    value={otpToken}
+                    maxLength={OTP_TOKEN_LENGTH}
+                    onChange={e => setOtpToken(e.target.value.replace(/\D/g, '').slice(0, OTP_TOKEN_LENGTH))}
+                    className="w-full border border-gray-300 rounded-xl px-4 py-3 text-2xl text-center tracking-[0.35em] focus:outline-none focus:ring-4 focus:ring-duma-green/20 focus:border-duma-green transition-all bg-gray-50/50"
+                    placeholder="00000000"
+                  />
+                </div>
+                <p className="text-sm text-center text-slate-500">
+                  Enter the {OTP_TOKEN_LENGTH}-digit code sent to {email.trim().toLowerCase()}.
+                </p>
+                <button
+                  type="button"
+                  onClick={handleResendOtp}
+                  disabled={isProcessing || resendWaitMs > 0}
+                  className="w-full text-sm font-semibold text-duma-green hover:text-duma-blue disabled:text-slate-400 disabled:cursor-not-allowed transition-colors"
+                >
+                  {resendWaitMs > 0 ? `Resend available in ${formatWaitTime(resendWaitMs)}` : 'Resend code'}
+                </button>
+              </>
+            ) : (
+              <>
+                <div>
+                  <label className="block text-sm font-semibold text-neutral-800 mb-1">Email address</label>
+                  <input
+                    required
+                    type="email"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
                     className="w-full border border-gray-300 rounded-xl px-4 py-3 text-lg focus:outline-none focus:ring-4 focus:ring-duma-green/20 focus:border-duma-green transition-all bg-gray-50/50"
-                    placeholder="+250 788 000 000"
+                    placeholder="you@example.com"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-neutral-800 mb-1">Business Name</label>
+                  <label className="block text-sm font-semibold text-neutral-800 mb-1">Password</label>
                   <input
                     required
-                    type="text"
-                    value={businessName}
-                    onChange={e => setBusinessName(e.target.value)}
+                    type="password"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
                     className="w-full border border-gray-300 rounded-xl px-4 py-3 text-lg focus:outline-none focus:ring-4 focus:ring-duma-green/20 focus:border-duma-green transition-all bg-gray-50/50"
-                    placeholder="Business Name"
+                    placeholder="Enter password"
                   />
                 </div>
+
+                {isRegister && (
+                  <>
+                    <div>
+                      <label className="block text-sm font-semibold text-neutral-800 mb-1">Phone number</label>
+                      <input
+                        required
+                        type="tel"
+                        value={phone}
+                        onChange={e => setPhone(e.target.value)}
+                        className="w-full border border-gray-300 rounded-xl px-4 py-3 text-lg focus:outline-none focus:ring-4 focus:ring-duma-green/20 focus:border-duma-green transition-all bg-gray-50/50"
+                        placeholder="+250 788 000 000"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-neutral-800 mb-1">Business Name</label>
+                      <input
+                        required
+                        type="text"
+                        value={businessName}
+                        onChange={e => setBusinessName(e.target.value)}
+                        className="w-full border border-gray-300 rounded-xl px-4 py-3 text-lg focus:outline-none focus:ring-4 focus:ring-duma-green/20 focus:border-duma-green transition-all bg-gray-50/50"
+                        placeholder="Business Name"
+                      />
+                    </div>
+                  </>
+                )}
               </>
             )}
 
@@ -257,7 +445,7 @@ function LoginForm() {
               disabled={isProcessing}
               className="w-full mt-4 bg-gradient-to-r from-pesa-navy to-slate-800 text-white font-bold text-lg py-4 rounded-[2rem] shadow-xl shadow-slate-200 transition-all hover:bg-slate-900 disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              {isRegister ? 'Create account' : 'Log in'}
+              {isOtpStep ? 'Verify code' : isRegister ? 'Create account' : 'Log in'}
             </motion.button>
 
             {status && <p className="text-sm text-center text-slate-500 mt-3">{status}</p>}
@@ -269,16 +457,25 @@ function LoginForm() {
               <button
                 type="button"
                 onClick={() => {
+                  if (isOtpStep) {
+                    setIsOtpStep(false);
+                    setOtpToken('');
+                    setStatus('');
+                    setIsProcessing(false);
+                    return;
+                  }
+
                   setIsRegister(!isRegister);
                   setStatus('');
                   setEmail('');
                   setPassword('');
                   setPhone('');
                   setBusinessName('');
+                  setOtpToken('');
                 }}
                 className="ml-2 text-duma-green font-semibold hover:text-duma-blue transition-colors underline"
               >
-                {isRegister ? 'Log in here' : 'Sign up here'}
+                {isOtpStep ? 'Change email' : isRegister ? 'Log in here' : 'Sign up here'}
               </button>
             </p>
           </div>
