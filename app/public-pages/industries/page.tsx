@@ -49,6 +49,14 @@ export default function IndustriesPage() {
     }
   ];
 
+  const slugify = (value: string) =>
+    value
+      .toLowerCase()
+      .replace(/&/g, 'and')
+      .replace(/[^a-z0-9\s-]/g, '')
+      .trim()
+      .replace(/\s+/g, '-');
+
   return (
     <div className="flex flex-col min-h-screen bg-white">
       <PublicNavbar />
@@ -79,6 +87,8 @@ export default function IndustriesPage() {
               {industries.map((industry, index) => (
                 <motion.div
                   key={index}
+                  id={slugify(industry.name)}
+                  style={{ scrollMarginTop: '90px' }}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
