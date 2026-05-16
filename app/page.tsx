@@ -22,7 +22,7 @@ export default function LandingPage() {
           >
             
             <h1 className="hero-title mb-8">
-              Global Business <br/>
+             <br/>
               <span className="text-pesa-navy">Merchant Operating <br/> System</span>
             </h1>
             <p className="text-xl text-slate-600 mb-10 max-w-lg leading-relaxed">
@@ -170,7 +170,7 @@ export default function LandingPage() {
                 <span className="text-2xl font-bold">QORAPP</span>
               </div>
               <p className="text-slate-300 mb-6 leading-relaxed">
-                A global merchant operating system with professional banking and management tools for MSMEs to receive payments and track business growth in their local market.
+                Merchant operating system with professional banking and management tools for MSMEs to receive payments and track business growth in their local market.
               </p>
               <div className="flex space-x-4">
                 <a href="#" className="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center hover:bg-pesa-navy transition-colors">
