@@ -33,7 +33,9 @@ import CountrySelector from './CountrySelector';
 
 const iconSize = 17;
 
-const simpleMenus = {
+type SimpleMenuItem = { title?: string; subtitle?: string; href?: string; icon?: React.ElementType; divider?: boolean };
+
+const simpleMenus: { about: SimpleMenuItem[]; merchants: SimpleMenuItem[]; contact: SimpleMenuItem[] } = {
   about: [
     { title: 'Our Story', subtitle: 'How QORAPP was founded', href: '/support', icon: Building2 },
     { title: 'Our Team', subtitle: 'Meet the people behind QORAPP', href: '/support', icon: Users },
@@ -97,7 +99,7 @@ function DropdownItem({
   );
 }
 
-function DesktopSimpleDropdown({ items }: { items: Array<Record<string, unknown>> }) {
+function DesktopSimpleDropdown({ items }: { items: SimpleMenuItem[] }) {
   return (
     <div className="qorapp-dropdown">
       {items.map((item, index) => {
