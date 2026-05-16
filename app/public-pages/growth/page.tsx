@@ -23,7 +23,7 @@ export default function GrowthPage() {
     },
     {
       title: 'Financial Inclusion',
-      description: 'Join Rwanda\'s digital economy',
+      description: 'Join Global\'s digital economy',
       details: 'Build your digital business profile. Access tax visibility tools. Create formal business records for growth.',
       icon: 'fas fa-chart-line',
       href: '/login?service=digital-footprint',
@@ -104,7 +104,7 @@ export default function GrowthPage() {
                 className="text-center"
               >
                 <div className="text-4xl font-bold text-pesa-navy mb-3">0.4%</div>
-                <p className="text-slate-600">Lowest transaction fees in Rwanda. No hidden charges.</p>
+                <p className="text-slate-600">Lowest transaction fees in Most Country. No hidden charges.</p>
               </motion.div>
 
               <motion.div

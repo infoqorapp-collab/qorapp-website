@@ -66,7 +66,7 @@ export default function IndustriesPage() {
                 QORAPP for Your Business
               </h1>
               <p className="text-xl text-slate-600 mb-8 max-w-2xl mx-auto">
-                Serving 300,000+ SMEs across Rwanda. Simple digital payment and inventory tools designed for your industry.
+                Serving 300,000+ SMEs across World. Simple digital payment and inventory tools designed for your industry.
               </p>
             </motion.div>
           </div>

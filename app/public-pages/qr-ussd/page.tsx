@@ -21,7 +21,7 @@ export default function QRUSSDPage() {
                 QR & USSD Payment Solutions
               </h1>
               <p className="text-xl text-slate-600 mb-8 max-w-2xl mx-auto">
-                Accept payments instantly from any customer, anywhere in Rwanda. No internet required for USSD payments.
+                Accept payments instantly from any customer, anywhere in World. No internet required for USSD payments.
               </p>
               <Link 
                 href="/login?service=qr-ussd"

@@ -31,7 +31,7 @@ export default function HelpPage() {
     },
     {
       title: 'BNR Compliance',
-      description: 'Regulated and trusted by Rwanda',
+      description: 'Regulated and trusted by Mostly Country',
       details: [
         'Licensed by Central Bank of Rwanda',
         'ISO 27001 certified data security',
