@@ -37,9 +37,6 @@ const simpleMenus = {
   about: [
     { title: 'Our Story', subtitle: 'How QORAPP was founded', href: '/support', icon: Building2 },
     { title: 'Our Team', subtitle: 'Meet the people behind QORAPP', href: '/support', icon: Users },
-    { title: 'Global Compliance', subtitle: 'Market-ready financial controls', href: '/compliance', icon: ShieldCheck },
-    { divider: true },
-    { title: 'Careers', subtitle: 'Join our growing team', href: '/support', icon: Briefcase },
   ],
   merchants: [
     { title: 'Retail Shops', subtitle: 'Point-of-sale for daily commerce', href: '/public-pages/industries', icon: Store },
@@ -131,7 +128,7 @@ export default function PublicNavbar() {
 
   const desktopItems = [
     { label: 'Home', href: '/', active: isActive(['/']) && pathname === '/' },
-    { label: 'About Us', href: '/support', dropdown: simpleMenus.about, active: isActive(['/support', '/compliance']) },
+    { label: 'About Us', href: '/support', dropdown: simpleMenus.about, active: isActive(['/support']) },
     { label: 'Solutions', href: '/public-pages/qr-ussd', mega: true, active: isActive(['/public-pages', '/compliance']) },
     { label: 'For Merchants', href: '/public-pages/industries', dropdown: simpleMenus.merchants, active: isActive(['/public-pages/industries']) },
     { label: 'Investors', href: '/pricing', active: isActive(['/pricing']) },

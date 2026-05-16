@@ -11,7 +11,7 @@ export default function LandingPage() {
       <PublicNavbar />
 
       {/* SECTION 1: HERO */}
-      <header className="relative pt-0 pb-12 overflow-hidden bg-white flex-1">
+      <header className="relative mt-4 pt-0 pb-12 overflow-hidden bg-white flex-1">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           
           <motion.div 
