@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import {
-  ArrowRight,
   Briefcase,
   Building2,
   ChevronDown,
@@ -30,6 +29,7 @@ import {
   ChartLine,
 } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
+import CountrySelector from './CountrySelector';
 
 const iconSize = 17;
 
@@ -37,7 +37,7 @@ const simpleMenus = {
   about: [
     { title: 'Our Story', subtitle: 'How QORAPP was founded', href: '/support', icon: Building2 },
     { title: 'Our Team', subtitle: 'Meet the people behind QORAPP', href: '/support', icon: Users },
-    { title: 'BNR Compliance', subtitle: 'Regulated in Rwanda', href: '/compliance', icon: ShieldCheck },
+    { title: 'Global Compliance', subtitle: 'Market-ready financial controls', href: '/compliance', icon: ShieldCheck },
     { divider: true },
     { title: 'Careers', subtitle: 'Join our growing team', href: '/support', icon: Briefcase },
   ],
@@ -48,9 +48,9 @@ const simpleMenus = {
     { title: 'MSMEs', subtitle: 'Built for growing businesses', href: '/public-pages/industries', icon: Sprout },
   ],
   contact: [
-    { title: 'Send a Message', subtitle: 'hello@qorapp.rw', href: '/support', icon: Mail },
-    { title: 'Call Support', subtitle: '+250 788 000 000', href: '/support', icon: Phone },
-    { title: 'Visit Our Office', subtitle: 'Kigali, Rwanda', href: '/support', icon: MapPin },
+    { title: 'Send a Message', subtitle: 'hello@qorapp.com', href: '/support', icon: Mail },
+    { title: 'Call Support', subtitle: 'Global support lines', href: '/support', icon: Phone },
+    { title: 'Regional Offices', subtitle: 'Support across active markets', href: '/support', icon: MapPin },
     { divider: true },
     { title: 'Live Chat', subtitle: 'Available during business hours', href: '/support', icon: MessageCircle },
   ],
@@ -71,7 +71,7 @@ const solutionsMenus = [
       { title: 'Inventory Management', subtitle: 'Real-time stock tracking', href: '/public-pages/inventory', icon: Package },
       { title: 'Business Analytics', subtitle: 'Daily & weekly reports', href: '/public-pages/analytics', icon: ChartLine },
       { title: 'Expense Tracking', subtitle: 'Monitor costs & margins', href: '/public-pages/expenses', icon: Receipt },
-      { title: 'Compliance Tools', subtitle: 'BNR-ready reporting', href: '/compliance', icon: FileCheck },
+      { title: 'Compliance Tools', subtitle: 'Market-ready reporting', href: '/compliance', icon: FileCheck },
     ],
   },
 ];
@@ -192,6 +192,7 @@ export default function PublicNavbar() {
         </div>
 
         <div className="qorapp-nav-cta">
+          <CountrySelector />
           <Link href="/login" className="qorapp-btn qorapp-btn-ghost">
             Log In
           </Link>
@@ -260,6 +261,8 @@ export default function PublicNavbar() {
               <Link className="qorapp-mobile-link" href="/pricing" onClick={() => setIsOpen(false)}>
                 Investors
               </Link>
+
+              <CountrySelector mobile />
 
               <div className="qorapp-mobile-actions">
                 <Link href="/login" className="qorapp-btn qorapp-btn-ghost" onClick={() => setIsOpen(false)}>

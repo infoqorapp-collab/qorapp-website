@@ -2,6 +2,7 @@
 import { usePathname, useRouter } from 'next/navigation';
 import { Bell, LogOut, Search, Menu } from 'lucide-react';
 import { useAppContext } from '../../context/AppContext';
+import CountrySelector from './CountrySelector';
 
 interface TopHeaderProps {
   onMenuClick?: () => void;
@@ -44,6 +45,10 @@ export default function TopHeader({ onMenuClick }: TopHeaderProps) {
       </div>
 
       <div className="flex items-center gap-1 sm:gap-2 md:gap-4 shrink-0">
+        <div className="hidden md:block">
+          <CountrySelector />
+        </div>
+
         {/* Search Bar */}
         <div className="relative hidden xl:block">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />

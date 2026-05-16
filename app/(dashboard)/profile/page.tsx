@@ -3,11 +3,12 @@ import { useAppContext } from '../../context/AppContext';
 import { ArrowUpRight, ArrowDownLeft, Send, Receipt, Copy, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
-import CountUp from 'react-countup';
 import { supabase } from '../../../lib/supabase';
+import { formatMarketMoney, marketAmountToUsd, useMarket } from '@/lib/market';
 
 export default function ProfileScreen() {
   const { walletBalance, cashBalance, mobileBankBalance, transactions, user, sendMoney } = useAppContext();
+  const { market } = useMarket();
   const [sendAmount, setSendAmount] = useState('');
   const [recipientCode, setRecipientCode] = useState('');
   const [sendNote, setSendNote] = useState('');
@@ -113,7 +114,7 @@ export default function ProfileScreen() {
     setSendError('');
     setSendSuccess('');
 
-    const result = await sendMoney(recipientCode, parseFloat(sendAmount), 'Mobile Money', sendNote || 'Money transfer');
+    const result = await sendMoney(recipientCode, marketAmountToUsd(parseFloat(sendAmount), market), 'Mobile Money', sendNote || 'Money transfer');
 
     if (result.error) {
       setSendError(result.error);
@@ -157,7 +158,7 @@ export default function ProfileScreen() {
               className="text-5xl font-black tracking-tight mb-6"
               style={{ textShadow: '0 0 20px rgba(255,255,255,0.2)' }}
             >
-              $<CountUp end={walletBalance} duration={1.5} decimals={2} separator="," />
+              {formatMarketMoney(walletBalance, market)}
             </motion.h2>
 
             {/* User Reference Code */}
@@ -205,7 +206,7 @@ export default function ProfileScreen() {
                 </div>
                 <div>
                   <p className="text-sm font-bold text-gray-500 uppercase tracking-widest">Cash Balance</p>
-                  <p className="text-2xl font-black text-pesa-navy">${cashBalance.toFixed(2)}</p>
+                  <p className="text-2xl font-black text-pesa-navy">{formatMarketMoney(cashBalance, market)}</p>
                 </div>
               </div>
             </div>
@@ -217,7 +218,7 @@ export default function ProfileScreen() {
                 </div>
                 <div>
                   <p className="text-sm font-bold text-gray-500 uppercase tracking-widest">Mobile Bank</p>
-                  <p className="text-2xl font-black text-pesa-navy">${mobileBankBalance.toFixed(2)}</p>
+                  <p className="text-2xl font-black text-pesa-navy">{formatMarketMoney(mobileBankBalance, market)}</p>
                 </div>
               </div>
             </div>
@@ -253,7 +254,7 @@ export default function ProfileScreen() {
                         </div>
                       </div>
                       <div className={`font-black text-base sm:text-xl shrink-0 ${isPositive ? 'text-duma-green' : 'text-neutral-900'}`}>
-                        {isPositive ? '+' : '-'}${Number(txn.amount).toLocaleString(undefined, {minimumFractionDigits: 2})}
+                        {isPositive ? '+' : '-'}{formatMarketMoney(Number(txn.amount), market)}
                       </div>
                     </motion.div>
                   );
@@ -301,7 +302,7 @@ export default function ProfileScreen() {
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2">Amount ($)</label>
+              <label className="block text-sm font-bold text-gray-700 mb-2">Amount ({market.currency})</label>
               <input
                 type="number"
                 value={sendAmount}
@@ -361,7 +362,7 @@ export default function ProfileScreen() {
               
               <div className="bg-gray-50 p-4 rounded-lg">
                 <p className="text-sm text-gray-600">Amount</p>
-                <p className="font-bold text-lg text-pesa-navy">${parseFloat(sendAmount).toFixed(2)}</p>
+                <p className="font-bold text-lg text-pesa-navy">{formatMarketMoney(marketAmountToUsd(parseFloat(sendAmount), market), market)}</p>
               </div>
               
               {sendNote && (

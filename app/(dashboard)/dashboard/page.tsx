@@ -4,8 +4,6 @@ import { useAppContext } from '../../context/AppContext';
 import {
   Bell,
   DollarSign,
-  Activity,
-  LogOut,
   Package2,
   TriangleAlert,
   Wallet,
@@ -15,10 +13,10 @@ import {
   Receipt,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import CountUp from 'react-countup';
 import { motion } from 'framer-motion';
-import { LineChart, Line, XAxis, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { LineChart, Line, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { getDailySalesExpenseData, getTodaysTransactions } from '../../../lib/analytics';
+import { formatMarketMoney, useMarket } from '@/lib/market';
 
 type AlertItem = {
   id: string;
@@ -35,13 +33,12 @@ export default function Dashboard() {
     cashBalance,
     mobileBankBalance,
     isLoading,
-    logout,
     transactions,
     inventory,
-    user,
     notifications,
     markNotificationRead,
   } = useAppContext();
+  const { market } = useMarket();
   const router = useRouter();
 
   const todaysTransactions = getTodaysTransactions(transactions);
@@ -154,14 +151,14 @@ export default function Dashboard() {
     },
     {
       label: 'Avg. Order',
-      value: `$${avgOrderValue.toFixed(0)}`,
+      value: formatMarketMoney(avgOrderValue, market),
       helper: `${profitMargin.toFixed(0)}% margin`,
       icon: Receipt,
       tone: 'bg-blue-50',
     },
     {
       label: 'Expenses',
-      value: `$${totalExpenses.toFixed(0)}`,
+      value: formatMarketMoney(totalExpenses, market),
       helper: `${lowStockItems.length} low stock`,
       icon: TriangleAlert,
       tone: 'bg-white',
@@ -188,7 +185,7 @@ export default function Dashboard() {
             <div>
               <p className="text-xs uppercase tracking-[0.25em] text-slate-400 font-bold">Total Balance</p>
               <h2 className="text-3xl sm:text-4xl font-black tracking-tight mt-1">
-                $<CountUp end={walletBalance} duration={1.6} decimals={2} separator="," />
+                {formatMarketMoney(walletBalance, market)}
               </h2>
             </div>
           </div>
@@ -208,9 +205,9 @@ export default function Dashboard() {
           <div className="rounded-2xl border border-white/5 bg-white/5 p-6 backdrop-blur-sm shadow-inner">
              <div className="flex justify-between items-start">
                <div>
-                 <p className="text-sm font-bold text-slate-400">Today's Sales</p>
+                 <p className="text-sm font-bold text-slate-400">Today&apos;s Sales</p>
                  <h2 className="mt-2 text-3xl font-black tracking-tight">
-                   $<CountUp end={todaysSales} duration={1.8} separator="," />
+                   {formatMarketMoney(todaysSales, market)}
                  </h2>
                </div>
                <div className="rounded-xl bg-green-500/10 px-3 py-1.5 text-right flex items-center gap-1 text-sm font-bold text-green-400">
@@ -221,9 +218,9 @@ export default function Dashboard() {
           </div>
           
           <div className={`rounded-2xl border border-white/5 p-6 backdrop-blur-sm shadow-inner transition-colors ${todaysProfit >= 0 ? 'bg-green-500/10' : 'bg-red-500/10'}`}>
-             <p className={`text-sm font-bold ${todaysProfit >= 0 ? 'text-green-200' : 'text-red-200'}`}>Today's Profit</p>
+             <p className={`text-sm font-bold ${todaysProfit >= 0 ? 'text-green-200' : 'text-red-200'}`}>Today&apos;s Profit</p>
              <h2 className={`mt-2 text-3xl font-black tracking-tight ${todaysProfit >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-               {todaysProfit >= 0 ? '+' : '-'}$<CountUp end={Math.abs(todaysProfit)} duration={2.1} separator="," />
+               {todaysProfit >= 0 ? '+' : '-'}{formatMarketMoney(Math.abs(todaysProfit), market)}
              </h2>
           </div>
 
@@ -232,7 +229,7 @@ export default function Dashboard() {
                <div>
                  <p className="text-sm font-bold text-slate-400">Cash Balance</p>
                  <h2 className="mt-2 text-3xl font-black tracking-tight">
-                   $<CountUp end={cashBalance} duration={1.8} separator="," />
+                   {formatMarketMoney(cashBalance, market)}
                  </h2>
                </div>
                <div className="rounded-xl bg-blue-500/10 px-3 py-1.5 text-right flex items-center gap-1 text-sm font-bold text-blue-400">
@@ -246,7 +243,7 @@ export default function Dashboard() {
                <div>
                  <p className="text-sm font-bold text-slate-400">Mobile Bank</p>
                  <h2 className="mt-2 text-3xl font-black tracking-tight">
-                   $<CountUp end={mobileBankBalance} duration={1.8} separator="," />
+                   {formatMarketMoney(mobileBankBalance, market)}
                  </h2>
                </div>
                <div className="rounded-xl bg-purple-500/10 px-3 py-1.5 text-right flex items-center gap-1 text-sm font-bold text-purple-400">
@@ -293,7 +290,7 @@ export default function Dashboard() {
                 <option>This Month</option>
               </select>
             </div>
-            <div className="h-64 w-full">
+            <div className="h-64 min-h-64 w-full min-w-0">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={salesVsExpensesData}>
                   <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#9ca3af', fontWeight: 600 }} />
@@ -341,7 +338,7 @@ export default function Dashboard() {
                           </span>
                         </td>
                         <td className={`py-4 text-right font-black ${txn.isPositive ? 'text-duma-green' : 'text-red-600'}`}>
-                           {txn.isPositive ? '+' : '-'}${Number(txn.amount).toFixed(2)}
+                           {txn.isPositive ? '+' : '-'}{formatMarketMoney(Number(txn.amount), market)}
                         </td>
                       </tr>
                     ))
@@ -433,7 +430,7 @@ export default function Dashboard() {
                   <div key={item.method}>
                     <div className="flex items-center justify-between text-sm font-bold text-neutral-700 mb-2">
                       <span>{item.method}</span>
-                      <span>${item.amount.toFixed(0)}</span>
+                      <span>{formatMarketMoney(item.amount, market)}</span>
                     </div>
                     <div className="h-3 rounded-full bg-slate-100 overflow-hidden">
                       <div

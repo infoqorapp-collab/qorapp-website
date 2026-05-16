@@ -1,8 +1,11 @@
 'use client';
 import { motion } from 'framer-motion';
 import PublicNavbar from './components/ui/PublicNavbar';
+import { formatMarketMoney, useMarket } from '@/lib/market';
 
 export default function LandingPage() {
+  const { market } = useMarket();
+
   return (
     <div className="flex flex-col min-h-screen font-sans bg-white text-slate-900">
       <PublicNavbar />
@@ -17,15 +20,13 @@ export default function LandingPage() {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <div className="inline-block bg-slate-50 text-pesa-navy px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-6 border border-slate-200">
-              Coming Soon: QORAPP RWANDA
-            </div>
+            
             <h1 className="hero-title mb-8">
-              Rwanda's Complete <br/>
+              Global Business <br/>
               <span className="text-pesa-navy">Merchant Operating <br/> System</span>
             </h1>
             <p className="text-xl text-slate-600 mb-10 max-w-lg leading-relaxed">
-              A professional business banking and management platform for MSMEs. Fast, affordable, and secure tools to help you receive payments and track growth.
+              A professional business banking and management platform for MSMEs in every market. Fast, affordable, and secure tools to help you receive payments and track growth in your local currency.
             </p>
             <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-10">
               <a href="/login" className="px-10 py-4 bg-gradient-to-r from-pesa-navy to-slate-800 text-white text-center rounded-xl font-bold text-lg shadow-xl shadow-slate-200 hover:shadow-2xl transition-all transform hover:scale-105">
@@ -37,7 +38,9 @@ export default function LandingPage() {
             </div>
             <div className="flex items-center space-x-3 text-slate-500">
               <i className="fa-solid fa-building-columns text-pesa-navy"></i>
-              <span className="text-sm font-semibold">Trusted by Rwanda's emerging businesses. Regulated by Central Bank of Rwanda.</span>
+              <span className="text-sm font-semibold">
+                Showing prices for {market.country} in {market.currency}. Example sale: {formatMarketMoney(125, market)}.
+              </span>
             </div>
           </motion.div>
 
@@ -167,7 +170,7 @@ export default function LandingPage() {
                 <span className="text-2xl font-bold">QORAPP</span>
               </div>
               <p className="text-slate-300 mb-6 leading-relaxed">
-                Rwanda's complete merchant operating system. Professional banking and management tools for MSMEs to receive payments and track business growth.
+                A global merchant operating system with professional banking and management tools for MSMEs to receive payments and track business growth in their local market.
               </p>
               <div className="flex space-x-4">
                 <a href="#" className="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center hover:bg-pesa-navy transition-colors">
@@ -218,8 +221,8 @@ export default function LandingPage() {
                   <i className="fas fa-map-marker-alt text-white"></i>
                 </div>
                 <div>
-                  <p className="font-semibold">Kigali, Rwanda</p>
-                  <p className="text-slate-400 text-sm">Headquarters</p>
+                  <p className="font-semibold">{market.officeLabel}</p>
+                  <p className="text-slate-400 text-sm">Regional support</p>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
@@ -227,7 +230,7 @@ export default function LandingPage() {
                   <i className="fas fa-phone text-white"></i>
                 </div>
                 <div>
-                  <p className="font-semibold">+250 788 000 000</p>
+                  <p className="font-semibold">{market.supportPhone}</p>
                   <p className="text-slate-400 text-sm">Support Hotline</p>
                 </div>
               </div>
@@ -236,7 +239,7 @@ export default function LandingPage() {
                   <i className="fas fa-envelope text-white"></i>
                 </div>
                 <div>
-                  <p className="font-semibold">hello@qorapp.rw</p>
+                  <p className="font-semibold">{market.supportEmail}</p>
                   <p className="text-slate-400 text-sm">Business Inquiries</p>
                 </div>
               </div>
@@ -249,7 +252,7 @@ export default function LandingPage() {
           <div className="max-w-7xl mx-auto px-6 py-6">
             <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
               <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-6">
-                <p className="text-slate-400 text-sm">© 2026 QORAPP Rwanda. All rights reserved.</p>
+                <p className="text-slate-400 text-sm">© 2026 QORAPP Global. All rights reserved.</p>
                 <div className="flex items-center space-x-4 text-xs">
                   <a href="#" className="text-slate-400 hover:text-white transition-colors">Privacy Policy</a>
                   <span className="text-slate-600">•</span>
@@ -263,7 +266,7 @@ export default function LandingPage() {
                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                   <span className="text-slate-400 text-sm">All systems operational</span>
                 </div>
-                <div className="text-slate-500 text-sm">🇷🇼 Made in Rwanda</div>
+                <div className="text-slate-500 text-sm">Built for international commerce</div>
               </div>
             </div>
           </div>

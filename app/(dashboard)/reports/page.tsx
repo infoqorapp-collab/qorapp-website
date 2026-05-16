@@ -1,15 +1,17 @@
 'use client';
-import { 
-  BarChart, Bar, 
+import {
+  BarChart, Bar,
   PieChart, Pie, Cell,
-  LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer 
+  LineChart, Line, XAxis, Tooltip, ResponsiveContainer
 } from 'recharts';
 import { motion } from 'framer-motion';
 import { useAppContext } from '../../context/AppContext';
 import { getDailySalesExpenseData, getExpenseBreakdownData, getWeeklyProfitData } from '../../../lib/analytics';
+import { formatMarketMoney, useMarket } from '@/lib/market';
 
 export default function ReportsScreen() {
   const { isLoading, transactions } = useAppContext();
+  const { market } = useMarket();
   const salesData = getDailySalesExpenseData(transactions);
   const expensesData = getExpenseBreakdownData(transactions);
   const profitData = getWeeklyProfitData(transactions);
@@ -32,7 +34,7 @@ export default function ReportsScreen() {
               className="bg-white rounded-3xl p-4 sm:p-6 lg:p-8 shadow-sm border border-gray-100"
             >
               <h3 className="text-sm font-black text-gray-400 uppercase tracking-widest mb-6">Weekly Sales</h3>
-              <div className="h-64 w-full">
+              <div className="h-64 min-h-64 w-full min-w-0">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={salesData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
                     <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#9ca3af', fontWeight: 600 }} />
@@ -48,7 +50,7 @@ export default function ReportsScreen() {
               className="bg-white rounded-3xl p-4 sm:p-6 lg:p-8 shadow-sm border border-gray-100"
             >
               <h3 className="text-sm font-black text-gray-400 uppercase tracking-widest mb-6">Profit Trends</h3>
-              <div className="h-64 w-full mt-2">
+              <div className="h-64 min-h-64 w-full min-w-0 mt-2">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={profitData}>
                     <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#9ca3af', fontWeight: 600 }} />
@@ -80,7 +82,7 @@ export default function ReportsScreen() {
                 {/* Recharts Donut */}
                 {expensesData.length > 0 ? (
                   <>
-                    <div className="w-full max-w-64 h-64">
+                    <div className="w-full max-w-64 h-64 min-h-64 min-w-0">
                       <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
                           <Pie
@@ -108,7 +110,7 @@ export default function ReportsScreen() {
                             <div className="w-4 h-4 rounded-full shadow-sm" style={{ backgroundColor: exp.color }}></div>
                             <span className="truncate">{exp.name}</span>
                           </div>
-                          <div className="text-pesa-navy shrink-0">${exp.value.toLocaleString()}</div>
+                          <div className="text-pesa-navy shrink-0">{formatMarketMoney(exp.value, market)}</div>
                         </div>
                       ))}
                     </div>

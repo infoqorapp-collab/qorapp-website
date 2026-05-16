@@ -1,6 +1,7 @@
 'use client';
 import { createContext, useContext, useState, useEffect, useRef, ReactNode } from 'react';
 import { supabase } from '../../lib/supabase';
+import { formatMarketMoney, useMarket } from '@/lib/market';
 
 type AuthStartResult = {
   error: string | null;
@@ -118,6 +119,7 @@ const defaultState: AppState = {
 const AppContext = createContext<AppState>(defaultState);
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
+  const { market } = useMarket();
   const [state, setState] = useState<Omit<AppState, 'login' | 'logout' | 'signIn' | 'signUp' | 'verifyEmailOtp' | 'addSale' | 'addExpense' | 'sendMoney' | 'addProduct' | 'updateStock' | 'markNotificationRead' | 'markAllNotificationsRead' | 'updateNotificationSettings'>>({
     ...defaultState
   });
@@ -406,7 +408,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         user_id: userId,
         type: 'sale_recorded',
         title: 'Sale recorded',
-        message: `You recorded a $${amount.toFixed(2)} sale${item ? ` for ${item}` : ''}.`,
+        message: `You recorded a ${formatMarketMoney(amount, market)} sale${item ? ` for ${item}` : ''}.`,
         href: '/transactions',
         metadata: { amount, method, item: item || null },
       });
@@ -438,7 +440,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         user_id: userId,
         type: 'expense_recorded',
         title: 'Expense recorded',
-        message: `You recorded a $${amount.toFixed(2)} expense for ${type}.`,
+        message: `You recorded a ${formatMarketMoney(amount, market)} expense for ${type}.`,
         href: '/transactions',
         metadata: { amount, method, category: type },
       });

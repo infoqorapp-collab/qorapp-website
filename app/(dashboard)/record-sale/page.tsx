@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useAppContext } from '../../context/AppContext';
 import { Banknote, Smartphone } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { formatMarketMoney, marketAmountToUsd, useMarket } from '@/lib/market';
 
 export default function RecordSaleScreen() {
   const [item, setItem] = useState('');
@@ -11,13 +12,16 @@ export default function RecordSaleScreen() {
   const [method, setMethod] = useState<'Cash' | 'Mobile Money'>('Cash');
   const [isConfirming, setIsConfirming] = useState(false);
   const { addSale } = useAppContext();
+  const { market } = useMarket();
   const router = useRouter();
+  const parsedMarketAmount = Number.parseFloat(amount || '0');
+  const parsedUsdAmount = marketAmountToUsd(parsedMarketAmount, market);
 
   const handleConfirm = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!amount) return;
     setIsConfirming(true);
-    await addSale(parseFloat(amount), method, item);
+    await addSale(parsedUsdAmount, method, item);
     
     // Allow animation to play before routing
     setTimeout(() => router.push('/dashboard'), 800);
@@ -34,7 +38,7 @@ export default function RecordSaleScreen() {
               transition={{ duration: 0.8, ease: "easeOut" }}
               className="absolute left-0 right-0 pointer-events-none z-50 flex justify-center mt-32"
             >
-              <span className="text-5xl font-black text-duma-green drop-shadow-lg">+${amount}</span>
+              <span className="text-5xl font-black text-duma-green drop-shadow-lg">+{formatMarketMoney(parsedUsdAmount, market)}</span>
             </motion.div>
           )}
         </AnimatePresence>
@@ -58,7 +62,7 @@ export default function RecordSaleScreen() {
             </div>
             
             <div>
-              <label className="block text-sm font-bold text-neutral-800 mb-2">Amount ($)</label>
+              <label className="block text-sm font-bold text-neutral-800 mb-2">Amount ({market.currency})</label>
               <input 
                 required
                 type="number"

@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useAppContext } from '../../context/AppContext';
 import { Receipt } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { marketAmountToUsd, useMarket } from '@/lib/market';
 
 export default function ExpenseScreen() {
   const [type, setType] = useState('rent');
@@ -11,6 +12,7 @@ export default function ExpenseScreen() {
   const [method, setMethod] = useState<'Cash' | 'Mobile money'>('Mobile money');
   const [shakeFile, setShakeFile] = useState(false);
   const { addExpense } = useAppContext();
+  const { market } = useMarket();
   const router = useRouter();
 
   const handleConfirm = async (e: React.FormEvent) => {
@@ -20,7 +22,7 @@ export default function ExpenseScreen() {
     setShakeFile(true);
     setTimeout(() => setShakeFile(false), 500);
 
-    await addExpense(parseFloat(amount), type, method);
+    await addExpense(marketAmountToUsd(parseFloat(amount), market), type, method);
     
     setTimeout(() => router.push('/dashboard'), 600);
   };
@@ -53,7 +55,7 @@ export default function ExpenseScreen() {
             </div>
             
             <div>
-              <label className="block text-sm font-bold text-neutral-800 mb-2">Amount ($)</label>
+              <label className="block text-sm font-bold text-neutral-800 mb-2">Amount ({market.currency})</label>
               <input 
                 required
                 type="number"
@@ -69,7 +71,7 @@ export default function ExpenseScreen() {
               <div className="relative">
                 <select 
                     value={method}
-                    onChange={e => setMethod(e.target.value as any)}
+                    onChange={e => setMethod(e.target.value as 'Cash' | 'Mobile money')}
                     className="w-full border border-gray-300 bg-white rounded-xl px-4 py-3 text-lg appearance-none focus:outline-none focus:ring-4 focus:ring-red-100 focus:border-red-500 transition-all shadow-sm"
                   >
                     <option value="Mobile money">Mobile money</option>

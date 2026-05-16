@@ -14,8 +14,8 @@ const dmSerif = DM_Serif_Display({
 });
 
 export const metadata: Metadata = {
-  title: "QORAPP | Rwanda's Merchant Operating System",
-  description: "A professional business banking and management platform for MSMEs.",
+  title: "QORAPP | Global Merchant Operating System",
+  description: "A professional business banking and management platform for MSMEs across international markets.",
 };
 
 import { AppProvider } from "./context/AppContext";

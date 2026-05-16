@@ -2,8 +2,11 @@
 import { motion } from 'framer-motion';
 import PublicNavbar from '../components/ui/PublicNavbar';
 import Link from 'next/link';
+import { formatMarketMoney, useMarket } from '@/lib/market';
 
 export default function PricingPage() {
+  const { market } = useMarket();
+
   const plans = [
     {
       name: 'Transaction Fee',
@@ -92,7 +95,10 @@ export default function PricingPage() {
                 QORAPP Pricing: 0.4% Per Transaction
               </h1>
               <p className="text-xl text-slate-600 mb-8 max-w-2xl mx-auto">
-                No monthly subscriptions. No hidden fees. Pay only 0.4% on each payment. Start free, scale without limits.
+                No monthly subscriptions. No hidden fees. Pay only 0.4% on each payment. Your selected market is {market.country}, so money is shown in {market.currency}.
+              </p>
+              <p className="inline-flex rounded-lg bg-white px-5 py-3 text-sm font-bold text-pesa-navy shadow-sm ring-1 ring-slate-200">
+                Example fee on {formatMarketMoney(100, market)}: {formatMarketMoney(0.4, market)}
               </p>
             </motion.div>
           </div>

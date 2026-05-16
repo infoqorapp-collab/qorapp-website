@@ -2,9 +2,11 @@
 import { useAppContext } from '../../context/AppContext';
 import { ArrowUpRight, ArrowDownLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { formatMarketMoney, useMarket } from '@/lib/market';
 
 export default function WalletScreen() {
   const { walletBalance, transactions } = useAppContext();
+  const { market } = useMarket();
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -38,7 +40,7 @@ export default function WalletScreen() {
                 className="text-5xl font-black tracking-tight mb-10"
                 style={{ textShadow: '0 0 20px rgba(255,255,255,0.2)' }}
               >
-                ${walletBalance.toLocaleString(undefined, {minimumFractionDigits: 2})}
+                {formatMarketMoney(walletBalance, market)}
               </motion.h2>
               
               <div className="flex flex-col sm:flex-row lg:flex-col gap-4 w-full">
@@ -82,7 +84,7 @@ export default function WalletScreen() {
                           </div>
                         </div>
                         <div className={`font-black text-xl ${isPositive ? 'text-duma-green' : 'text-neutral-900'}`}>
-                          {isPositive ? '+' : '-'}${Number(txn.amount).toLocaleString(undefined, {minimumFractionDigits: 2})}
+                          {isPositive ? '+' : '-'}{formatMarketMoney(Number(txn.amount), market)}
                         </div>
                       </motion.div>
                     );

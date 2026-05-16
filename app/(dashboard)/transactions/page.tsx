@@ -4,9 +4,11 @@ import { useState } from 'react';
 import { useAppContext } from '../../context/AppContext';
 import { ArrowUpRight, ArrowDownRight, Search, Filter } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { formatMarketMoney, useMarket } from '@/lib/market';
 
 export default function TransactionsScreen() {
   const { transactions, isLoading } = useAppContext();
+  const { market } = useMarket();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
 
@@ -111,7 +113,7 @@ export default function TransactionsScreen() {
                         {txn.payment_method || 'Manual'}
                       </td>
                       <td className={`py-4 px-6 text-right font-black text-lg ${isPositive ? 'text-duma-green' : 'text-red-600'}`}>
-                         {isPositive ? '+' : '-'}${Number(txn.amount).toFixed(2)}
+                         {isPositive ? '+' : '-'}{formatMarketMoney(Number(txn.amount), market)}
                       </td>
                     </motion.tr>
                   );
