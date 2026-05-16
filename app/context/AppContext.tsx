@@ -326,20 +326,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       return { error: getAuthErrorMessage(error.message) };
     }
 
-    await supabase.auth.signOut();
-
-    const { error: otpError } = await supabase.auth.signInWithOtp({
-      email: normalizedEmail,
-      options: {
-        shouldCreateUser: false,
-      },
-    });
-
-    if (otpError) {
-      return { error: getAuthErrorMessage(otpError.message) };
-    }
-
-    return { error: null, otpSent: true };
+    await loadData();
+    return { error: null };
   };
 
   const signUp = async (email: string, password: string, businessName: string, phone: string) => {
@@ -359,11 +347,19 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       return { error: getAuthErrorMessage(error.message) };
     }
 
-    if (data.session) {
-      await supabase.auth.signOut();
+    if (!data?.session) {
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: normalizedEmail,
+        password,
+      });
+
+      if (signInError) {
+        return { error: getAuthErrorMessage(signInError.message) };
+      }
     }
 
-    return { error: null, otpSent: true };
+    await loadData();
+    return { error: null };
   };
 
   const verifyEmailOtp = async (email: string, token: string) => {
