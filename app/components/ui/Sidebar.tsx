@@ -121,45 +121,7 @@ export default function Sidebar({ className = '', onClose }: SidebarProps) {
         })}
       </nav>
 
-      {/* Financial Feedback */}
-      <div className="p-4 border-t border-slate-800/50">
-        <div className="bg-slate-800/30 rounded-xl p-3 text-sm">
-          <div className="flex items-center justify-between mb-2">
-            <div className="text-xs text-slate-300 font-semibold">Today</div>
-            <div className="text-xs text-slate-400">Summary</div>
-          </div>
-          <div className="flex items-center justify-between">
-            <div className="text-xs text-slate-300">Sales</div>
-            <div className="font-semibold text-white">{new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(todaysSales || 0)}</div>
-          </div>
-          <div className="flex items-center justify-between mt-1">
-            <div className="text-xs text-slate-300">Expenses</div>
-            <div className="font-semibold text-white">{new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(Math.max(0, (todaysSales || 0) - (todaysProfit || 0)))}</div>
-          </div>
-
-          <div className={`mt-3 p-2 rounded-md text-sm font-medium ${Math.max(0, (todaysSales || 0) - (todaysProfit || 0)) > (todaysSales || 0) ? 'bg-red-600/20 text-red-300 border border-red-600/20' : 'bg-emerald-600/10 text-emerald-300 border border-emerald-600/10'}`}>
-            {Math.max(0, (todaysSales || 0) - (todaysProfit || 0)) > (todaysSales || 0) ? (
-              <div>Warning: Spending exceeds earnings today.</div>
-            ) : (
-              <div>Good job: Earnings exceed spending today.</div>
-            )}
-          </div>
-
-          <div className="mt-3 text-xs text-slate-400">
-            <div>This week: {new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(thisWeekSales)} sales, {new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(thisWeekExpenses)} expenses.</div>
-            <div className="mt-1">
-              <span>Sales vs last week: </span>
-              <span className={`font-semibold ${weekSalesChange !== null && weekSalesChange > 0 ? 'text-emerald-300' : 'text-slate-300'}`}>
-                {weekSalesChange === null ? '–' : `${weekSalesChange >= 0 ? '+' : ''}${weekSalesChange.toFixed(1)}%`}
-              </span>
-              <span className="ml-3">Expenses vs last week: </span>
-              <span className={`font-semibold ${weekExpensesChange !== null && weekExpensesChange > 0 ? 'text-red-300' : 'text-slate-300'}`}>
-                {weekExpensesChange === null ? '–' : `${weekExpensesChange >= 0 ? '+' : ''}${weekExpensesChange.toFixed(1)}%`}
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Financial feedback moved to Reports page */}
 
       {/* Support Section */}
       <div className="p-4 border-t border-slate-800/50">

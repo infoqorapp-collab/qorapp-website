@@ -47,7 +47,7 @@ const simpleMenus: { about: SimpleMenuItem[]; merchants: SimpleMenuItem[]; conta
     { title: 'MSMEs', subtitle: 'Built for growing businesses', href: '/public-pages/industries#mini-markets', icon: Sprout },
   ],
   contact: [
-    { title: 'Send a Message', subtitle: 'hello@qorapp.com', href: '/public-pages/contact', icon: Mail },
+    { title: 'Send a Message', subtitle: 'infoqorapp@gmail.com', href: '/public-pages/contact', icon: Mail },
     { title: 'Call Support', subtitle: 'Global support lines', href: '/public-pages/contact', icon: Phone },
     { title: 'Regional Offices', subtitle: 'Support across active markets', href: '/public-pages/contact', icon: MapPin },
   ],

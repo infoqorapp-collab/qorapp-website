@@ -19,7 +19,7 @@ export default function ContactPage() {
       icon: Mail,
       title: 'Email Support',
       description: 'Send us a message and we\'ll respond within 24 hours',
-      contact: 'hello@qorapp.com',
+      contact: 'infoqorapp@gmail.com',
       color: 'from-blue-500 to-blue-600'
     },
     {

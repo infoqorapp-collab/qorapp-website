@@ -10,7 +10,7 @@ import { getDailySalesExpenseData, getExpenseBreakdownData, getWeeklyProfitData 
 import { formatMarketMoney, useMarket } from '@/lib/market';
 
 export default function ReportsScreen() {
-  const { isLoading, transactions } = useAppContext();
+  const { isLoading, transactions, todaysSales, todaysProfit } = useAppContext();
   const { market } = useMarket();
   const salesData = getDailySalesExpenseData(transactions);
   const expensesData = getExpenseBreakdownData(transactions);
@@ -18,12 +18,80 @@ export default function ReportsScreen() {
 
   if (isLoading) return <div className="min-h-screen bg-slate-50 flex items-center justify-center font-sans font-bold text-pesa-navy text-xl">Loading Reports...</div>;
 
+  const todaysExpenses = Math.max(0, Number(todaysSales || 0) - Number(todaysProfit || 0));
+
+  const now = new Date();
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+  const oneDayMs = 24 * 60 * 60 * 1000;
+  const weekStart = new Date(startOfToday.getTime() - 6 * oneDayMs);
+  const prevWeekStart = new Date(weekStart.getTime() - 7 * oneDayMs);
+  const prevWeekEnd = new Date(weekStart.getTime() - oneDayMs);
+
+  const sumRange = (start: Date, end: Date, type: 'sale' | 'expense') => {
+    return (transactions || []).reduce((sum, t) => {
+      const created = t.created_at ? new Date(t.created_at) : new Date(0);
+      if (created >= start && created <= end && t.type === type) {
+        return sum + Number(t.amount || 0);
+      }
+      return sum;
+    }, 0);
+  };
+
+  const thisWeekSales = sumRange(weekStart, now, 'sale');
+  const thisWeekExpenses = sumRange(weekStart, now, 'expense');
+  const prevWeekSales = sumRange(prevWeekStart, prevWeekEnd, 'sale');
+  const prevWeekExpenses = sumRange(prevWeekStart, prevWeekEnd, 'expense');
+
+  const weekSalesChange = prevWeekSales === 0 ? null : ((thisWeekSales - prevWeekSales) / prevWeekSales) * 100;
+  const weekExpensesChange = prevWeekExpenses === 0 ? null : ((thisWeekExpenses - prevWeekExpenses) / prevWeekExpenses) * 100;
+
   return (
     <div className="max-w-7xl mx-auto w-full">
         <div className="mb-8">
           <h1 className="text-3xl font-black text-pesa-navy tracking-tight">Reports & Analytics</h1>
           <p className="text-neutral-500 font-medium mt-1">Visualize your business performance across key metrics.</p>
         </div>
+
+        {/* Financial Summary (moved from sidebar) */}
+        <motion.div className="mb-6 bg-white rounded-3xl p-4 sm:p-6 shadow-sm border border-gray-100">
+          <div className="flex items-center justify-between mb-3">
+            <div className="text-sm font-semibold text-pesa-navy">Today</div>
+            <div className="text-sm text-neutral-400">Summary</div>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div className="text-sm text-neutral-600">Sales</div>
+            <div className="font-semibold text-pesa-navy">{formatMarketMoney(todaysSales || 0, market)}</div>
+          </div>
+
+          <div className="flex items-center justify-between mt-1">
+            <div className="text-sm text-neutral-600">Expenses</div>
+            <div className="font-semibold text-pesa-navy">{formatMarketMoney(todaysExpenses || 0, market)}</div>
+          </div>
+
+          <div className={`mt-3 p-2 rounded-md text-sm font-medium ${todaysExpenses > (todaysSales || 0) ? 'bg-red-50 text-red-600 border border-red-100' : 'bg-emerald-50 text-emerald-700 border border-emerald-100'}`}>
+            {todaysExpenses > (todaysSales || 0) ? (
+              <div>Warning: Spending exceeds earnings today.</div>
+            ) : (
+              <div>Good job: Earnings exceed spending today.</div>
+            )}
+          </div>
+
+          <div className="mt-3 text-sm text-neutral-500">
+            <div>This week: {formatMarketMoney(thisWeekSales, market)} sales, {formatMarketMoney(thisWeekExpenses, market)} expenses.</div>
+            <div className="mt-1">
+              <span>Sales vs last week: </span>
+              <span className={`font-semibold ${weekSalesChange !== null && weekSalesChange > 0 ? 'text-emerald-600' : 'text-neutral-600'}`}>
+                {weekSalesChange === null ? '–' : `${weekSalesChange >= 0 ? '+' : ''}${weekSalesChange.toFixed(1)}%`}
+              </span>
+              <span className="ml-3">Expenses vs last week: </span>
+              <span className={`font-semibold ${weekExpensesChange !== null && weekExpensesChange > 0 ? 'text-red-600' : 'text-neutral-600'}`}>
+                {weekExpensesChange === null ? '–' : `${weekExpensesChange >= 0 ? '+' : ''}${weekExpensesChange.toFixed(1)}%`}
+              </span>
+            </div>
+          </div>
+        </motion.div>
 
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 lg:gap-8">
           
