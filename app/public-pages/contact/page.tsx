@@ -26,7 +26,7 @@ export default function ContactPage() {
       icon: Phone,
       title: 'Call Support',
       description: 'Speak directly with our support team',
-      contact: '+250 788 XXX XXX',
+      contact: '+250791 801 416',
       color: 'from-green-500 to-green-600'
     },
     {

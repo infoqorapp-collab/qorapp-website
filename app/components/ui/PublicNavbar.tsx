@@ -37,7 +37,7 @@ type SimpleMenuItem = { title?: string; subtitle?: string; href?: string; icon?:
 
 const simpleMenus: { about: SimpleMenuItem[]; merchants: SimpleMenuItem[]; contact: SimpleMenuItem[] } = {
   about: [
-    { title: 'Our Story', subtitle: 'How QORAPP was founded', href: '/public-pages/about#our-story', icon: Building2 },
+    { title: 'ye', subtitle: 'How QORAPP was founded', href: '/public-pages/about#our-story', icon: Building2 },
     { title: 'Our Team', subtitle: 'Meet the people behind QORAPP', href: '/public-pages/about#our-team', icon: Users },
   ],
   merchants: [
