@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { supabase } from '../../../lib/supabase';
 import { formatMarketMoney, marketAmountToUsd, useMarket } from '@/lib/market';
+import QRCodeComponent from '../../components/QRCode';
 
 export default function ProfileScreen() {
   const { walletBalance, cashBalance, mobileBankBalance, transactions, user, sendMoney } = useAppContext();
@@ -265,7 +266,105 @@ export default function ProfileScreen() {
         </div>
       </div>
 
-      {/* Send Money Modal */}
+      {/* QR Code Section */}
+      <div className="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <QRCodeComponent
+          value={`${typeof window !== 'undefined' ? window.location.origin : ''}/receive?to=${user?.refCode}`}
+          businessName={user?.businessName || 'Your Business'}
+          label="Share this QR code to receive payments instantly"
+          size={280}
+        />
+        
+        {/* How to Use Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="bg-white rounded-3xl p-8 shadow-lg border border-gray-100"
+        >
+          <h3 className="text-2xl font-bold text-pesa-navy mb-6">How to Use Your QR Code</h3>
+          
+          <div className="space-y-6">
+            <div className="flex gap-4">
+              <div className="flex-shrink-0">
+                <div className="flex items-center justify-center h-10 w-10 rounded-full bg-pesa-navy text-white font-bold">
+                  1
+                </div>
+              </div>
+              <div>
+                <h4 className="font-bold text-gray-900 mb-1">Share Your QR Code</h4>
+                <p className="text-gray-600 text-sm">
+                  Download and share the QR code with customers, friends, or family. You can print it, send it via email, or display it in your shop.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex gap-4">
+              <div className="flex-shrink-0">
+                <div className="flex items-center justify-center h-10 w-10 rounded-full bg-pesa-navy text-white font-bold">
+                  2
+                </div>
+              </div>
+              <div>
+                <h4 className="font-bold text-gray-900 mb-1">They Scan It</h4>
+                <p className="text-gray-600 text-sm">
+                  Anyone with a smartphone can scan the QR code using their camera app. It will instantly open your payment page.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex gap-4">
+              <div className="flex-shrink-0">
+                <div className="flex items-center justify-center h-10 w-10 rounded-full bg-pesa-navy text-white font-bold">
+                  3
+                </div>
+              </div>
+              <div>
+                <h4 className="font-bold text-gray-900 mb-1">They Enter Amount</h4>
+                <p className="text-gray-600 text-sm">
+                  The sender enters the amount they want to send and an optional note. They'll see your business name clearly.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex gap-4">
+              <div className="flex-shrink-0">
+                <div className="flex items-center justify-center h-10 w-10 rounded-full bg-pesa-navy text-white font-bold">
+                  4
+                </div>
+              </div>
+              <div>
+                <h4 className="font-bold text-gray-900 mb-1">Instant Payment</h4>
+                <p className="text-gray-600 text-sm">
+                  The money is transferred instantly to your wallet. You'll get a notification and can see it in your transactions.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Benefits */}
+          <div className="mt-8 pt-8 border-t border-gray-200">
+            <h4 className="font-bold text-gray-900 mb-4">Benefits</h4>
+            <ul className="space-y-2 text-sm text-gray-600">
+              <li className="flex items-center gap-2">
+                <span className="text-green-600 font-bold">✓</span> No need to share your reference code manually
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="text-green-600 font-bold">✓</span> Reduces payment errors and typos
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="text-green-600 font-bold">✓</span> Works offline - no internet needed to scan
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="text-green-600 font-bold">✓</span> Perfect for shops, restaurants, and markets
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="text-green-600 font-bold">✓</span> Payments settle instantly
+              </li>
+            </ul>
+          </div>
+        </motion.div>
+      </div>
       <div id="send-money-modal" className="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50 p-4 overflow-y-auto">
         <div className="bg-white rounded-3xl p-5 sm:p-8 max-w-md w-full max-h-[calc(100vh-2rem)] overflow-y-auto qorapp-scrollbar">
           <h3 className="text-2xl font-black text-pesa-navy mb-6">Send Money</h3>
