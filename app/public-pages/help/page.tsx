@@ -21,7 +21,6 @@ export default function HelpPage() {
       title: 'Support',
       description: 'Get help when you need it',
       details: [
-        'Live chat support 24/7',
         'Email support (infoqorapp@gmail.com)',
         'Phone support (+250791 801 416)',
         'Video tutorials and documentation'

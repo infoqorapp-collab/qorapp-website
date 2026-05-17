@@ -35,13 +35,6 @@ export default function ContactPage() {
       description: 'Visit us at our offices across active markets',
       contact: 'Kigali, Rwanda',
       color: 'from-purple-500 to-purple-600'
-    },
-    {
-      icon: MessageCircle,
-      title: 'Live Chat',
-      description: 'Chat with us during business hours',
-      contact: 'Available 9 AM - 6 PM EAT',
-      color: 'from-orange-500 to-orange-600'
     }
   ];
 

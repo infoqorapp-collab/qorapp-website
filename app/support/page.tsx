@@ -6,14 +6,6 @@ import Link from 'next/link';
 export default function SupportPage() {
   const supportChannels = [
     {
-      title: 'Live Chat',
-      description: 'Get instant help from our support team',
-      availability: 'Available 24/7',
-      icon: 'fas fa-comments',
-      action: 'Start Chat',
-      href: '#chat'
-    },
-    {
       title: 'Email Support',
       description: 'Send us your questions and concerns',
       availability: 'Response within 2 hours',
