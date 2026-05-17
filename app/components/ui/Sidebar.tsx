@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, CreditCard, Package, Receipt, Users, Settings, X, HelpCircle, BarChart } from 'lucide-react';
+import { LayoutDashboard, CreditCard, Package, Receipt, Users, Settings, X, HelpCircle, BarChart, TrendingUp } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAppContext } from '../../context/AppContext';
 
@@ -47,6 +47,7 @@ export default function Sidebar({ className = '', onClose }: SidebarProps) {
     { label: 'Transactions', href: '/transactions', icon: CreditCard },
     { label: 'Inventory', href: '/inventory', icon: Package },
     { label: 'Expenses', href: '/expense', icon: Receipt },
+    { label: 'Insights', href: '/insights', icon: TrendingUp },
     { label: 'Reports', href: '/reports', icon: BarChart },
     { label: 'Profile', href: '/profile', icon: Users },
     { label: 'Settings', href: '/settings', icon: Settings },
