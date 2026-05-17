@@ -42,8 +42,8 @@ const simpleMenus: { about: SimpleMenuItem[]; merchants: SimpleMenuItem[]; conta
   ],
   merchants: [
     { title: 'Retail Shops', subtitle: 'Point-of-sale for daily commerce', href: '/public-pages/industries#retail-shops', icon: Store },
-    { title: 'Restaurants & Bars', subtitle: 'Bills, shifts & cost tracking', href: '/public-pages/industries#restaurants-bars', icon: Utensils },
-    { title: 'Services & Salons', subtitle: 'Bookings & recurring payments', href: '/public-pages/industries#salons-barbershops', icon: Scissors },
+    { title: 'Restaurants & Bars', subtitle: 'Bills, shifts & cost tracking', href: '/public-pages/industries#food-vendors-and-restaurants', icon: Utensils },
+    { title: 'Services & Salons', subtitle: 'Bookings & recurring payments', href: '/public-pages/industries#salons-and-barbershops', icon: Scissors },
     { title: 'MSMEs', subtitle: 'Built for growing businesses', href: '/public-pages/industries#mini-markets', icon: Sprout },
   ],
   contact: [
