@@ -7,7 +7,7 @@ export default function AboutPage() {
     {
       name: 'Diana Uwinema',
       position: 'CEO',
-      image: '/team/diane.jpg',
+      image: '/team/diane.jpeg',
       background: [
         'Background in enterprise management',
         'Strong understanding of SME operations and growth strategy',
@@ -19,7 +19,7 @@ export default function AboutPage() {
     {
       name: 'Joshua Mugisha',
       position: 'COO',
-      image: '/team/joshua.jpg',
+      image: '/team/joshua.jpeg',
       background: [
         'Experienced in logistics and operational systems',
         'Oversees merchant onboarding, operational execution, and field deployment'
@@ -28,7 +28,7 @@ export default function AboutPage() {
     {
       name: 'Sunny Kagame',
       position: 'CTO',
-      image: '/team/kagame.jpg',
+      image: '/team/kagame.jpeg',
       background: [
         'Experienced in Data Analytics, database Management',
         'Oversees system architecture',
