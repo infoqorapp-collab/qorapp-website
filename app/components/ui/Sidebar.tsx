@@ -1,8 +1,9 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, CreditCard, Package, Receipt, Users, Settings, X, HelpCircle } from 'lucide-react';
+import { LayoutDashboard, CreditCard, Package, Receipt, Users, Settings, X, HelpCircle, BarChart } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useAppContext } from '../../context/AppContext';
 
 interface SidebarProps {
   className?: string;
@@ -11,12 +12,42 @@ interface SidebarProps {
 
 export default function Sidebar({ className = '', onClose }: SidebarProps) {
   const pathname = usePathname();
+  const { todaysSales, todaysProfit, transactions } = useAppContext();
+
+  const todaysExpenses = Math.max(0, Number(todaysSales || 0) - Number(todaysProfit || 0));
+
+  const now = new Date();
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+  const oneDayMs = 24 * 60 * 60 * 1000;
+  const weekStart = new Date(startOfToday.getTime() - 6 * oneDayMs);
+  const prevWeekStart = new Date(weekStart.getTime() - 7 * oneDayMs);
+  const prevWeekEnd = new Date(weekStart.getTime() - oneDayMs);
+
+  const sumRange = (start: Date, end: Date, type: 'sale' | 'expense') => {
+    return (transactions || []).reduce((sum, t) => {
+      const created = t.created_at ? new Date(t.created_at) : new Date(0);
+      if (created >= start && created <= end && t.type === type) {
+        return sum + Number(t.amount || 0);
+      }
+      return sum;
+    }, 0);
+  };
+
+  const thisWeekSales = sumRange(weekStart, now, 'sale');
+  const thisWeekExpenses = sumRange(weekStart, now, 'expense');
+  const prevWeekSales = sumRange(prevWeekStart, prevWeekEnd, 'sale');
+  const prevWeekExpenses = sumRange(prevWeekStart, prevWeekEnd, 'expense');
+
+  const weekSalesChange = prevWeekSales === 0 ? null : ((thisWeekSales - prevWeekSales) / prevWeekSales) * 100;
+  const weekExpensesChange = prevWeekExpenses === 0 ? null : ((thisWeekExpenses - prevWeekExpenses) / prevWeekExpenses) * 100;
 
   const navItems = [
     { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
     { label: 'Transactions', href: '/transactions', icon: CreditCard },
     { label: 'Inventory', href: '/inventory', icon: Package },
     { label: 'Expenses', href: '/expense', icon: Receipt },
+    { label: 'Reports', href: '/reports', icon: BarChart },
     { label: 'Profile', href: '/profile', icon: Users },
     { label: 'Settings', href: '/settings', icon: Settings },
   ];
@@ -89,6 +120,46 @@ export default function Sidebar({ className = '', onClose }: SidebarProps) {
           );
         })}
       </nav>
+
+      {/* Financial Feedback */}
+      <div className="p-4 border-t border-slate-800/50">
+        <div className="bg-slate-800/30 rounded-xl p-3 text-sm">
+          <div className="flex items-center justify-between mb-2">
+            <div className="text-xs text-slate-300 font-semibold">Today</div>
+            <div className="text-xs text-slate-400">Summary</div>
+          </div>
+          <div className="flex items-center justify-between">
+            <div className="text-xs text-slate-300">Sales</div>
+            <div className="font-semibold text-white">{new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(todaysSales || 0)}</div>
+          </div>
+          <div className="flex items-center justify-between mt-1">
+            <div className="text-xs text-slate-300">Expenses</div>
+            <div className="font-semibold text-white">{new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(Math.max(0, (todaysSales || 0) - (todaysProfit || 0)))}</div>
+          </div>
+
+          <div className={`mt-3 p-2 rounded-md text-sm font-medium ${Math.max(0, (todaysSales || 0) - (todaysProfit || 0)) > (todaysSales || 0) ? 'bg-red-600/20 text-red-300 border border-red-600/20' : 'bg-emerald-600/10 text-emerald-300 border border-emerald-600/10'}`}>
+            {Math.max(0, (todaysSales || 0) - (todaysProfit || 0)) > (todaysSales || 0) ? (
+              <div>Warning: Spending exceeds earnings today.</div>
+            ) : (
+              <div>Good job: Earnings exceed spending today.</div>
+            )}
+          </div>
+
+          <div className="mt-3 text-xs text-slate-400">
+            <div>This week: {new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(thisWeekSales)} sales, {new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(thisWeekExpenses)} expenses.</div>
+            <div className="mt-1">
+              <span>Sales vs last week: </span>
+              <span className={`font-semibold ${weekSalesChange !== null && weekSalesChange > 0 ? 'text-emerald-300' : 'text-slate-300'}`}>
+                {weekSalesChange === null ? '–' : `${weekSalesChange >= 0 ? '+' : ''}${weekSalesChange.toFixed(1)}%`}
+              </span>
+              <span className="ml-3">Expenses vs last week: </span>
+              <span className={`font-semibold ${weekExpensesChange !== null && weekExpensesChange > 0 ? 'text-red-300' : 'text-slate-300'}`}>
+                {weekExpensesChange === null ? '–' : `${weekExpensesChange >= 0 ? '+' : ''}${weekExpensesChange.toFixed(1)}%`}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Support Section */}
       <div className="p-4 border-t border-slate-800/50">
