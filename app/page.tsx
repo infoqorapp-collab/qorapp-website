@@ -171,20 +171,7 @@ export default function LandingPage() {
               <p className="text-slate-300 mb-6 leading-relaxed">
                 Merchant operating system with professional banking and management tools for MSMEs to receive payments and track business growth in their local market.
               </p>
-              <div className="flex space-x-4">
-                <a href="#" className="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center hover:bg-pesa-navy transition-colors">
-                  <i className="fab fa-twitter text-slate-400 hover:text-white"></i>
-                </a>
-                <a href="#" className="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center hover:bg-pesa-navy transition-colors">
-                  <i className="fab fa-linkedin text-slate-400 hover:text-white"></i>
-                </a>
-                <a href="#" className="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center hover:bg-pesa-navy transition-colors">
-                  <i className="fab fa-facebook text-slate-400 hover:text-white"></i>
-                </a>
-                <a href="#" className="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center hover:bg-pesa-navy transition-colors">
-                  <i className="fab fa-instagram text-slate-400 hover:text-white"></i>
-                </a>
-              </div>
+              
             </div>
 
             {/* Products */}
