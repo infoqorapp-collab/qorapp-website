@@ -14,7 +14,7 @@ const dmSerif = DM_Serif_Display({
 });
 
 export const metadata: Metadata = {
-  title: "QORAPP | Global Merchant Operating System",
+  title: "QORAPP | Merchant Operating System",
   description: "A professional business banking and management platform for MSMEs across international markets.",
 };
 
