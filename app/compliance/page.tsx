@@ -182,7 +182,7 @@ export default function CompliancePage() {
               Our compliance team is ready to answer any questions about security and regulatory compliance.
             </p>
             <a
-              href="mailto:compliance@QORAPP.rw"
+              href="mailto:infoqorapp@gmail.com"
               className="inline-block px-8 py-3 bg-purple-600 text-white rounded-lg font-bold hover:bg-purple-700 transition"
             >
               Contact Compliance Team

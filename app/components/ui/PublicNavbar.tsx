@@ -37,8 +37,8 @@ type SimpleMenuItem = { title?: string; subtitle?: string; href?: string; icon?:
 
 const simpleMenus: { about: SimpleMenuItem[]; merchants: SimpleMenuItem[]; contact: SimpleMenuItem[] } = {
   about: [
-    { title: 'Our Story', subtitle: 'How QORAPP was founded', href: '/support', icon: Building2 },
-    { title: 'Our Team', subtitle: 'Meet the people behind QORAPP', href: '/support', icon: Users },
+    { title: 'Our Story', subtitle: 'How QORAPP was founded', href: '/public-pages/about', icon: Building2 },
+    { title: 'Our Team', subtitle: 'Meet the people behind QORAPP', href: '/public-pages/about', icon: Users },
   ],
   merchants: [
     { title: 'Retail Shops', subtitle: 'Point-of-sale for daily commerce', href: '/public-pages/industries#retail-shops', icon: Store },
@@ -47,11 +47,11 @@ const simpleMenus: { about: SimpleMenuItem[]; merchants: SimpleMenuItem[]; conta
     { title: 'MSMEs', subtitle: 'Built for growing businesses', href: '/public-pages/industries#mini-markets', icon: Sprout },
   ],
   contact: [
-    { title: 'Send a Message', subtitle: 'hello@qorapp.com', href: '/support', icon: Mail },
-    { title: 'Call Support', subtitle: 'Global support lines', href: '/support', icon: Phone },
-    { title: 'Regional Offices', subtitle: 'Support across active markets', href: '/support', icon: MapPin },
+    { title: 'Send a Message', subtitle: 'hello@qorapp.com', href: '/public-pages/contact', icon: Mail },
+    { title: 'Call Support', subtitle: 'Global support lines', href: '/public-pages/contact', icon: Phone },
+    { title: 'Regional Offices', subtitle: 'Support across active markets', href: '/public-pages/contact', icon: MapPin },
     { divider: true },
-    { title: 'Live Chat', subtitle: 'Available during business hours', href: '/support', icon: MessageCircle },
+    { title: 'Live Chat', subtitle: 'Available during business hours', href: '/public-pages/contact', icon: MessageCircle },
   ],
 };
 
@@ -130,11 +130,11 @@ export default function PublicNavbar() {
 
   const desktopItems = [
     { label: 'Home', href: '/', active: isActive(['/']) && pathname === '/' },
-    { label: 'About Us', href: '/support', dropdown: simpleMenus.about, active: isActive(['/support']) },
+    { label: 'About Us', href: '/public-pages/about', dropdown: simpleMenus.about, active: isActive(['/public-pages/about']) },
     { label: 'Solutions', href: '/public-pages/qr-ussd', mega: true, active: isActive(['/public-pages', '/compliance']) },
     { label: 'For Merchants', href: '/public-pages/industries', dropdown: simpleMenus.merchants, active: isActive(['/public-pages/industries']) },
     { label: 'Investors', href: '/pricing', active: isActive(['/pricing']) },
-    { label: 'Contact', href: '/support', dropdown: simpleMenus.contact, active: isActive(['/support']) },
+    { label: 'Contact', href: '/public-pages/contact', dropdown: simpleMenus.contact, active: isActive(['/public-pages/contact']) },
   ];
 
   const mobileSections = [

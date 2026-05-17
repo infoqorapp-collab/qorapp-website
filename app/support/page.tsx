@@ -19,7 +19,7 @@ export default function SupportPage() {
       availability: 'Response within 2 hours',
       icon: 'fas fa-envelope',
       action: 'Email Us',
-      href: 'mailto:support@QORAPP.rw'
+      href: 'infoqorapp@gmail.com'
     },
     {
       title: 'Phone Support',
@@ -27,7 +27,7 @@ export default function SupportPage() {
       availability: 'Mon-Fri 8AM-6PM EAT',
       icon: 'fas fa-phone',
       action: 'Call Now',
-      href: 'tel:+250788000000'
+      href: 'tel:+250791 801 416'
     },
     {
       title: 'WhatsApp',
@@ -175,7 +175,7 @@ export default function SupportPage() {
               Our support team is ready to help. Don't hesitate to reach out.
             </p>
             <a
-              href="mailto:support@QORAPP.rw"
+              href="infoqorapp@gmail.com"
               className="inline-block px-8 py-3 bg-pesa-navy text-white rounded-lg font-bold hover:bg-slate-800 transition"
             >
               Contact Support

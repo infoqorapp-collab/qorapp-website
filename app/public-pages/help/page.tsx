@@ -22,8 +22,8 @@ export default function HelpPage() {
       description: 'Get help when you need it',
       details: [
         'Live chat support 24/7',
-        'Email support (support@QORAPP.rw)',
-        'Phone support (+250 788 XXX XXX)',
+        'Email support (infoqorapp@gmail.com)',
+        'Phone support (+250791 801 416)',
         'Video tutorials and documentation'
       ],
       href: '/support',
@@ -163,7 +163,7 @@ export default function HelpPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a 
-                href="mailto:support@QORAPP.rw"
+                href="infoqorapp@gmail.com"
                 className="inline-block px-8 py-3 bg-pesa-navy text-white rounded-lg font-bold hover:bg-slate-800 transition"
               >
                 Email Support

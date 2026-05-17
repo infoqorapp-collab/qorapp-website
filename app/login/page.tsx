@@ -226,7 +226,7 @@ function LoginForm() {
                         value={phone}
                         onChange={e => setPhone(e.target.value)}
                         className="w-full border border-gray-300 rounded-xl px-4 py-3 text-lg focus:outline-none focus:ring-4 focus:ring-duma-green/20 focus:border-duma-green transition-all bg-gray-50/50"
-                        placeholder="+250 788 000 000"
+                        placeholder="+250791 801 416"
                       />
                     </div>
 
