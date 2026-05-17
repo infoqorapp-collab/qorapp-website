@@ -64,7 +64,7 @@ export default function AboutPage() {
         </section>
 
         {/* Our Story Section */}
-        <section className="py-24 lg:py-32 bg-white px-6">
+        <section id="our-story" className="py-24 lg:py-32 bg-white px-6">
           <div className="max-w-5xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -94,7 +94,7 @@ export default function AboutPage() {
         </section>
 
         {/* Our Team Section */}
-        <section className="py-24 lg:py-32 bg-gradient-to-br from-slate-50 to-white px-6">
+        <section id="our-team" className="py-24 lg:py-32 bg-gradient-to-br from-slate-50 to-white px-6">
           <div className="max-w-6xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
