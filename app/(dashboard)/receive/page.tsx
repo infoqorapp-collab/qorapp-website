@@ -18,50 +18,16 @@ function ReceivePaymentContent() {
   const [recipientName, setRecipientName] = useState('');
   const [recipientBusiness, setRecipientBusiness] = useState('');
   const [amount, setAmount] = useState('');
-  const [note, setNote] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isSending, setIsSending] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
 
-  // Fetch recipient info
   useEffect(() => {
-    const fetchRecipient = async () => {
-      if (!recipientCode) {
-        setError('Invalid payment request. Missing recipient code.');
-        setIsLoading(false);
-        return;
-      }
-
-      try {
-        const { data, error: rpcError } = await supabase
-          .rpc('get_user_by_ref_code', { recipient_ref_code: recipientCode });
-
-        if (rpcError) {
-          setError('Unable to find recipient. Please check the QR code.');
-          setIsLoading(false);
-          return;
-        }
-
-        if (!data || data.length === 0) {
-          setError('Recipient not found. This QR code may be invalid.');
-          setIsLoading(false);
-          return;
-        }
-
-        setRecipientName(data[0].email);
-        setRecipientBusiness(data[0].business_name);
-        setIsLoading(false);
-      } catch (err) {
-        console.error('Error fetching recipient:', err);
-        setError('An error occurred. Please try again.');
-        setIsLoading(false);
-      }
-    };
-
-    fetchRecipient();
-  }, [recipientCode]);
+    if (recipientCode) {
+      router.push(`/profile?to=${recipientCode}`);
+    }
+  }, [recipientCode, router]);
 
   const handleSendPayment = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,11 +42,6 @@ function ReceivePaymentContent() {
       return;
     }
 
-    setShowConfirm(true);
-  };
-
-  const confirmPayment = async () => {
-    setShowConfirm(false);
     setIsSending(true);
     setError('');
 
@@ -88,7 +49,7 @@ function ReceivePaymentContent() {
       recipientCode || '',
       marketAmountToUsd(parseFloat(amount), market),
       'QR Payment',
-      note || `Payment via QR code to ${recipientBusiness}`
+      `Payment via QR code to ${recipientBusiness}`
     );
 
     if (result.error) {
@@ -97,9 +58,8 @@ function ReceivePaymentContent() {
     } else {
       setSuccess('Payment sent successfully! ✓');
       setAmount('');
-      setNote('');
       setTimeout(() => {
-        router.push('/(dashboard)/profile');
+        router.push('/profile');
       }, 2000);
     }
   };
@@ -187,22 +147,6 @@ function ReceivePaymentContent() {
                     )}
                   </div>
 
-                  {/* Note Input */}
-                  <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">
-                      Note (Optional)
-                    </label>
-                    <textarea
-                      value={note}
-                      onChange={(e) => setNote(e.target.value)}
-                      placeholder="Add a note..."
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-pesa-navy focus:ring-2 focus:ring-pesa-navy/10 resize-none"
-                      rows={3}
-                      disabled={isSending}
-                    />
-                  </div>
-
-                  {/* Send Button */}
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
@@ -213,46 +157,6 @@ function ReceivePaymentContent() {
                     <Send size={24} />
                     {isSending ? 'Processing...' : `Send ${formatMarketMoney(parseFloat(amount) || 0, market)}`}
                   </motion.button>
-
-                  {/* Confirmation Modal */}
-                  {showConfirm && (
-                    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                      <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="bg-white rounded-3xl p-8 max-w-md w-full"
-                      >
-                        <h3 className="text-2xl font-bold text-pesa-navy mb-4">Confirm Payment</h3>
-                        <div className="space-y-4 mb-6">
-                          <div className="flex justify-between">
-                            <span className="text-gray-600">To:</span>
-                            <span className="font-bold text-pesa-navy">{recipientBusiness}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-gray-600">Amount:</span>
-                            <span className="font-bold text-pesa-navy">{formatMarketMoney(parseFloat(amount), market)}</span>
-                          </div>
-                        </div>
-
-                        <div className="flex gap-3">
-                          <button
-                            onClick={() => setShowConfirm(false)}
-                            className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl font-bold text-gray-700 hover:bg-gray-50"
-                          >
-                            Cancel
-                          </button>
-                          <motion.button
-                            whileTap={{ scale: 0.95 }}
-                            onClick={confirmPayment}
-                            disabled={isSending}
-                            className="flex-1 px-4 py-3 bg-pesa-navy text-white rounded-xl font-bold hover:bg-slate-800 disabled:opacity-50"
-                          >
-                            Confirm
-                          </motion.button>
-                        </div>
-                      </motion.div>
-                    </div>
-                  )}
                 </form>
               )}
 

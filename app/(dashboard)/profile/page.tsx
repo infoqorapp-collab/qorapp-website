@@ -3,6 +3,7 @@ import { useAppContext } from '../../context/AppContext';
 import { ArrowUpRight, ArrowDownLeft, Send, Receipt, Copy, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { supabase } from '../../../lib/supabase';
 import { formatMarketMoney, marketAmountToUsd, useMarket } from '@/lib/market';
 import QRCodeComponent from '../../components/QRCode';
@@ -10,6 +11,7 @@ import QRCodeComponent from '../../components/QRCode';
 export default function ProfileScreen() {
   const { walletBalance, cashBalance, mobileBankBalance, transactions, user, sendMoney } = useAppContext();
   const { market } = useMarket();
+  const searchParams = useSearchParams();
   const [sendAmount, setSendAmount] = useState('');
   const [recipientCode, setRecipientCode] = useState('');
   const [sendNote, setSendNote] = useState('');
@@ -69,6 +71,14 @@ export default function ProfileScreen() {
       setIsOwnRecipient(false);
     }
   }, [recipientCode]);
+
+  useEffect(() => {
+    const qrRecipient = searchParams.get('to');
+    if (qrRecipient && qrRecipient.length === 6) {
+      setRecipientCode(qrRecipient);
+      document.getElementById('send-money-modal')?.classList.remove('hidden');
+    }
+  }, [searchParams]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -269,7 +279,7 @@ export default function ProfileScreen() {
       {/* QR Code Section */}
       <div className="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
         <QRCodeComponent
-          value={`${typeof window !== 'undefined' ? window.location.origin : ''}/receive?to=${user?.refCode}`}
+          value={`${typeof window !== 'undefined' ? window.location.origin : ''}/profile?to=${user?.refCode}`}
           businessName={user?.businessName || 'Your Business'}
           label="Share this QR code to receive payments instantly"
           size={280}
