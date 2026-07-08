@@ -3,9 +3,11 @@ import { useState } from 'react';
 import { useAppContext } from '../../context/AppContext';
 import { Search } from 'lucide-react';
 import { motion, Variants, AnimatePresence } from 'framer-motion';
+import { formatMarketMoney, marketAmountToUsd, useMarket } from '@/lib/market';
 
 export default function InventoryScreen() {
   const { inventory, addProduct, updateStock } = useAppContext();
+  const { market } = useMarket();
   
   // Modal states
   const [isAddOpen, setIsAddOpen] = useState(false);
@@ -14,6 +16,7 @@ export default function InventoryScreen() {
   // Form states
   const [newProductName, setNewProductName] = useState('');
   const [newProductStock, setNewProductStock] = useState('');
+  const [newProductPrice, setNewProductPrice] = useState('');
   
   const [updateProductId, setUpdateProductId] = useState('');
   const [updateStockAmount, setUpdateStockAmount] = useState('');
@@ -33,11 +36,13 @@ export default function InventoryScreen() {
 
   const handleAddSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (newProductName && newProductStock) {
-      await addProduct(newProductName, parseInt(newProductStock));
+    if (newProductName && newProductStock && newProductPrice) {
+      const priceInUsd = marketAmountToUsd(Number.parseFloat(newProductPrice), market);
+      await addProduct(newProductName, parseInt(newProductStock), priceInUsd);
       setIsAddOpen(false);
       setNewProductName('');
       setNewProductStock('');
+      setNewProductPrice('');
     }
   };
 
@@ -89,6 +94,7 @@ export default function InventoryScreen() {
                     {item.status}
                   </span>
                 </div>
+                <p className="text-sm font-bold text-neutral-500 mt-2">{formatMarketMoney(item.price, market)} / unit</p>
               </div>
               <div className="text-right">
                 <p className="text-xs font-black uppercase tracking-widest text-neutral-400 mb-1">Stock</p>
@@ -115,6 +121,10 @@ export default function InventoryScreen() {
                 <div>
                   <label className="block text-sm font-bold text-neutral-700 mb-2">Initial Stock</label>
                   <input required type="number" placeholder="0" value={newProductStock} onChange={e => setNewProductStock(e.target.value)} className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-4 focus:ring-duma-green/20 focus:outline-none focus:border-duma-green transition" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-neutral-700 mb-2">Unit Price ({market.currency})</label>
+                  <input required type="number" min={0} step="0.01" placeholder="0.00" value={newProductPrice} onChange={e => setNewProductPrice(e.target.value)} className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-4 focus:ring-duma-green/20 focus:outline-none focus:border-duma-green transition" />
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3 pt-4">
                   <button type="button" onClick={() => setIsAddOpen(false)} className="flex-1 py-3.5 border border-gray-200 font-bold text-neutral-600 rounded-xl hover:bg-slate-50 transition">Cancel</button>

@@ -87,12 +87,17 @@ CREATE TABLE IF NOT EXISTS public.inventory (
   user_id uuid NOT NULL,
   name text NOT NULL,
   stock integer NOT NULL DEFAULT 0,
+  price numeric NOT NULL DEFAULT 0,
   status text DEFAULT 'Full'::text CHECK (status = ANY (ARRAY['Full'::text, 'Low Stock'::text, 'Out of Stock'::text])),
   created_at timestamp with time zone DEFAULT now(),
   updated_at timestamp with time zone DEFAULT now(),
   CONSTRAINT inventory_pkey PRIMARY KEY (id),
   CONSTRAINT inventory_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE
 );
+
+-- Safe to re-run: adds the price column to an inventory table that already exists
+-- from a previous version of this schema (price is stored in USD, same as transactions.amount).
+ALTER TABLE public.inventory ADD COLUMN IF NOT EXISTS price numeric NOT NULL DEFAULT 0;
 
 CREATE TABLE IF NOT EXISTS public.transactions (
   id uuid NOT NULL DEFAULT uuid_generate_v4(),

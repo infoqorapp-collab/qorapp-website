@@ -31,7 +31,14 @@ export type InventoryItem = {
   id: string;
   name: string;
   stock: number;
+  price: number;
   status: 'Full' | 'Low Stock' | 'Out of Stock';
+};
+
+const getStockStatus = (stock: number): InventoryItem['status'] => {
+  if (stock <= 0) return 'Out of Stock';
+  if (stock < 50) return 'Low Stock';
+  return 'Full';
 };
 
 export type AppNotification = {
@@ -71,10 +78,10 @@ interface AppState {
   signIn: (email: string, password: string) => Promise<AuthStartResult>;
   signUp: (email: string, password: string, businessName: string, phone: string) => Promise<AuthStartResult>;
   verifyEmailOtp: (email: string, token: string) => Promise<{ error: string | null }>;
-  addSale: (amount: number, method: string, item?: string) => Promise<void>;
+  addSale: (productId: string, quantity: number, method: string) => Promise<{ error: string | null }>;
   addExpense: (amount: number, type: string, method: string) => Promise<void>;
   sendMoney: (recipientCode: string, amount: number, method: string, note?: string) => Promise<{ error: string | null }>;
-  addProduct: (name: string, stock: number) => Promise<void>;
+  addProduct: (name: string, stock: number, price: number) => Promise<void>;
   updateStock: (id: string, newStock: number) => Promise<void>;
   markNotificationRead: (id: string) => Promise<void>;
   markAllNotificationsRead: () => Promise<void>;
@@ -106,7 +113,7 @@ const defaultState: AppState = {
   signIn: async () => ({ error: null }),
   signUp: async () => ({ error: null }),
   verifyEmailOtp: async () => ({ error: null }),
-  addSale: async () => {},
+  addSale: async () => ({ error: null }),
   addExpense: async () => {},
   sendMoney: async () => ({ error: null }),
   addProduct: async () => {},
@@ -281,8 +288,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       todaysProfit: profit,
       transactions: safeTxns,
       inventory: invData || [
-        { id: '1', name: 'Product Name 100', stock: 500, status: 'Full' },
-        { id: '2', name: 'Product Name 300', stock: 200, status: 'Low Stock' },
+        { id: '1', name: 'Product Name 100', stock: 500, price: 1, status: 'Full' },
+        { id: '2', name: 'Product Name 300', stock: 200, price: 3, status: 'Low Stock' },
       ],
       notifications: notificationData || [],
       notificationSettings: notificationSettingsData || defaultNotificationSettings,
@@ -382,36 +389,96 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     return { error: null };
   };
 
-  const addSale = async (amount: number, method: string, item?: string) => {
-    if (!state.user) return;
+  const addSale = async (productId: string, quantity: number, method: string) => {
+    if (!state.user) return { error: 'You must be signed in to record a sale.' };
+
+    if (!productId) {
+      return { error: 'Choose which product was sold.' };
+    }
+
+    if (!Number.isFinite(quantity) || quantity <= 0) {
+      return { error: 'Enter a quantity greater than zero.' };
+    }
+
+    const product = state.inventory.find((p) => p.id === productId);
+    if (!product) {
+      return { error: 'That product could not be found in your inventory.' };
+    }
+
+    if (quantity > product.stock) {
+      return { error: `Only ${product.stock} unit(s) of ${product.name} left in stock.` };
+    }
+
     if (isMountedRef.current) {
       setState(prev => ({ ...prev, isLoading: true }));
     }
     const { data: sessionData } = await supabase.auth.getSession();
     const userId = sessionData?.session?.user?.id;
-    if (!userId) return;
+    if (!userId) {
+      if (isMountedRef.current) {
+        setState(prev => ({ ...prev, isLoading: false }));
+      }
+      return { error: 'Unable to identify your account. Please sign in again.' };
+    }
 
-    await supabase.from('transactions').insert({
+    const amount = product.price * quantity;
+    const newStock = product.stock - quantity;
+    const newStatus = getStockStatus(newStock);
+
+    const { error: txError } = await supabase.from('transactions').insert({
       user_id: userId,
       type: 'sale',
       amount,
       payment_method: method,
-      description: item || 'Sale',
+      description: `${quantity} x ${product.name}`,
     });
+
+    if (txError) {
+      if (isMountedRef.current) {
+        setState(prev => ({ ...prev, isLoading: false }));
+      }
+      return { error: txError.message };
+    }
+
+    const { error: stockError } = await supabase
+      .from('inventory')
+      .update({ stock: newStock, status: newStatus })
+      .eq('id', productId);
+
+    if (stockError) {
+      if (isMountedRef.current) {
+        setState(prev => ({ ...prev, isLoading: false }));
+      }
+      return { error: stockError.message };
+    }
 
     if (state.notificationSettings.sales) {
       await supabase.from('notifications').insert({
         user_id: userId,
         type: 'sale_recorded',
         title: 'Sale recorded',
-        message: `You recorded a ${formatMarketMoney(amount, market)} sale${item ? ` for ${item}` : ''}.`,
+        message: `You recorded a ${formatMarketMoney(amount, market)} sale for ${quantity} x ${product.name}.`,
         href: '/transactions',
-        metadata: { amount, method, item: item || null },
+        metadata: { amount, method, item: product.name, quantity, product_id: productId },
       });
+    }
+
+    if (newStatus === 'Low Stock' || newStatus === 'Out of Stock') {
+      if (state.notificationSettings.inventory) {
+        await supabase.from('notifications').insert({
+          user_id: userId,
+          type: 'inventory',
+          title: newStatus === 'Out of Stock' ? 'Out of stock' : 'Low stock warning',
+          message: `${product.name} now has ${newStock} unit(s) in stock.`,
+          href: '/inventory',
+          metadata: { inventory_id: productId, stock: newStock },
+        });
+      }
     }
 
     await supabase.from('users').update({ wallet_balance: state.walletBalance + amount }).eq('id', userId);
     await loadData();
+    return { error: null };
   };
 
   const addExpense = async (amount: number, type: string, method: string) => {
@@ -446,7 +513,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     await loadData();
   };
 
-  const addProduct = async (name: string, stock: number) => {
+  const addProduct = async (name: string, stock: number, price: number) => {
     if (!state.user) return;
     if (isMountedRef.current) {
       setState(prev => ({ ...prev, isLoading: true }));
@@ -459,7 +526,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       user_id: userId,
       name,
       stock,
-      status: stock >= 50 ? 'Full' : 'Low Stock',
+      price,
+      status: getStockStatus(stock),
     });
 
     if (state.notificationSettings.inventory) {
@@ -528,7 +596,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
     await supabase.from('inventory').update({
       stock: newStock,
-      status: newStock >= 50 ? 'Full' : 'Low Stock',
+      status: getStockStatus(newStock),
     }).eq('id', id);
 
     if (state.notificationSettings.inventory) {
@@ -536,7 +604,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       await supabase.from('notifications').insert({
         user_id: userId,
         type: 'inventory',
-        title: newStock < 50 ? 'Low stock warning' : 'Stock updated',
+        title: newStock <= 0 ? 'Out of stock' : newStock < 50 ? 'Low stock warning' : 'Stock updated',
         message: `${itemName} now has ${newStock} units in stock.`,
         href: '/inventory',
         metadata: { inventory_id: id, stock: newStock },
