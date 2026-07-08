@@ -1,9 +1,13 @@
 'use client';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useAppContext } from '../../context/AppContext';
 import { Search } from 'lucide-react';
 import { motion, Variants, AnimatePresence } from 'framer-motion';
 import { formatMarketMoney, marketAmountToUsd, useMarket } from '@/lib/market';
+
+// Common starter products shown before the user has any inventory of their own,
+// or whenever what they've typed doesn't match something already in stock.
+const PRESET_PRODUCTS = ['Rice 5kg', 'Beans 1kg', 'Cooking Oil 1L', 'Potatoes 1kg'];
 
 export default function InventoryScreen() {
   const { inventory, addProduct, updateStock } = useAppContext();
@@ -17,6 +21,7 @@ export default function InventoryScreen() {
   const [newProductName, setNewProductName] = useState('');
   const [newProductStock, setNewProductStock] = useState('');
   const [newProductPrice, setNewProductPrice] = useState('');
+  const [showNameSuggestions, setShowNameSuggestions] = useState(false);
   
   const [updateProductId, setUpdateProductId] = useState('');
   const [updateStockAmount, setUpdateStockAmount] = useState('');
@@ -34,6 +39,45 @@ export default function InventoryScreen() {
     show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } }
   };
 
+  // Recently added products, newest first, deduped by name — each carries its known price.
+  const recentProducts = useMemo(() => {
+    const seen = new Set<string>();
+    const list: { name: string; price: number | null }[] = [];
+    for (const item of [...inventory].reverse()) {
+      const key = item.name.trim().toLowerCase();
+      if (seen.has(key)) continue;
+      seen.add(key);
+      list.push({ name: item.name, price: item.price });
+    }
+    return list;
+  }, [inventory]);
+
+  const nameSuggestions = useMemo(() => {
+    const query = newProductName.trim().toLowerCase();
+    const existingKeys = new Set(recentProducts.map(p => p.name.trim().toLowerCase()));
+
+    const presets = PRESET_PRODUCTS
+      .filter(name => !existingKeys.has(name.trim().toLowerCase()))
+      .map(name => ({ name, price: null as number | null }));
+
+    const combined = [...recentProducts, ...presets];
+
+    const filtered = query
+      ? combined.filter(p => p.name.toLowerCase().startsWith(query))
+      : combined;
+
+    return filtered.slice(0, 6);
+  }, [newProductName, recentProducts]);
+
+  const handleSelectSuggestion = (suggestion: { name: string; price: number | null }) => {
+    setNewProductName(suggestion.name);
+    if (suggestion.price !== null) {
+      const priceInMarket = suggestion.price * market.rateFromUsd;
+      setNewProductPrice(priceInMarket.toFixed(2));
+    }
+    setShowNameSuggestions(false);
+  };
+
   const handleAddSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newProductName && newProductStock && newProductPrice) {
@@ -43,6 +87,7 @@ export default function InventoryScreen() {
       setNewProductName('');
       setNewProductStock('');
       setNewProductPrice('');
+      setShowNameSuggestions(false);
     }
   };
 
@@ -114,9 +159,37 @@ export default function InventoryScreen() {
             <motion.div initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-white rounded-3xl p-5 sm:p-8 w-full max-w-md shadow-2xl">
               <h2 className="text-2xl font-black text-pesa-navy mb-6">Add New Product</h2>
               <form onSubmit={handleAddSubmit} className="space-y-5">
-                <div>
+                <div className="relative">
                   <label className="block text-sm font-bold text-neutral-700 mb-2">Product Name</label>
-                  <input required type="text" placeholder="e.g. Rice 5kg" value={newProductName} onChange={e => setNewProductName(e.target.value)} className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-4 focus:ring-duma-green/20 focus:outline-none focus:border-duma-green transition" />
+                  <input
+                    required
+                    type="text"
+                    autoComplete="off"
+                    placeholder="e.g. Rice 5kg"
+                    value={newProductName}
+                    onChange={e => { setNewProductName(e.target.value); setShowNameSuggestions(true); }}
+                    onFocus={() => setShowNameSuggestions(true)}
+                    onBlur={() => setTimeout(() => setShowNameSuggestions(false), 120)}
+                    className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-4 focus:ring-duma-green/20 focus:outline-none focus:border-duma-green transition"
+                  />
+                  {showNameSuggestions && nameSuggestions.length > 0 && (
+                    <div className="absolute z-10 mt-2 w-full bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
+                      {nameSuggestions.map((suggestion, index) => (
+                        <button
+                          key={`${suggestion.name}-${index}`}
+                          type="button"
+                          onMouseDown={e => e.preventDefault()}
+                          onClick={() => handleSelectSuggestion(suggestion)}
+                          className="w-full flex items-center justify-between px-4 py-2.5 text-left hover:bg-slate-50 transition"
+                        >
+                          <span className="font-semibold text-neutral-800">{suggestion.name}</span>
+                          <span className="text-xs font-bold text-neutral-400">
+                            {suggestion.price !== null ? formatMarketMoney(suggestion.price, market) : 'Suggested'}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-neutral-700 mb-2">Initial Stock</label>
@@ -127,7 +200,7 @@ export default function InventoryScreen() {
                   <input required type="number" min={0} step="0.01" placeholder="0.00" value={newProductPrice} onChange={e => setNewProductPrice(e.target.value)} className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-4 focus:ring-duma-green/20 focus:outline-none focus:border-duma-green transition" />
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3 pt-4">
-                  <button type="button" onClick={() => setIsAddOpen(false)} className="flex-1 py-3.5 border border-gray-200 font-bold text-neutral-600 rounded-xl hover:bg-slate-50 transition">Cancel</button>
+                  <button type="button" onClick={() => { setIsAddOpen(false); setShowNameSuggestions(false); }} className="flex-1 py-3.5 border border-gray-200 font-bold text-neutral-600 rounded-xl hover:bg-slate-50 transition">Cancel</button>
                   <button type="submit" className="flex-1 py-3.5 bg-duma-green text-white rounded-xl font-bold hover:bg-emerald-700 transition shadow-lg shadow-green-200">Save Product</button>
                 </div>
               </form>
