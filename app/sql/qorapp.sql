@@ -308,3 +308,4 @@ $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
 GRANT EXECUTE ON FUNCTION public.get_user_by_ref_code(text) TO authenticated;
 
+
