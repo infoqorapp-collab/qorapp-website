@@ -7,7 +7,33 @@ import { formatMarketMoney, marketAmountToUsd, useMarket } from '@/lib/market';
 
 // Common starter products shown before the user has any inventory of their own,
 // or whenever what they've typed doesn't match something already in stock.
-const PRESET_PRODUCTS = ['Rice 5kg', 'Beans 1kg', 'Cooking Oil 1L', 'Potatoes 1kg'];
+const PRESET_PRODUCTS = [
+  // Row 1: Daily Essentials & Beverages
+  'Rice 5kg', 'Beans 1kg','Heineken', 'Cooking Oil 1L', 'Potatoes 1kg', 'Cassava Flour 1kg', 
+  'Maize Flour (Ubwoba) 5kg', 'Plantains (Ibitoke) 1 Bunch', 'Inyange Milk 1L', 'Inyange Yoghurt 500ml', 'Fresh Beef 1kg', 
+  'Goat Meat 1kg', 'Tilapia Fish 1kg', 'Akabanga Chili Sauce 100ml', 'Local Honey 1kg', 'Rwandan Black Tea 500g', 
+  'Gorilla Coffee Beans 250g', 'Sugar 1kg', 'Salt 1kg', 'Onions 1kg', 'Tomatoes 1kg', 
+  'Mutzig Beer 65cl', 'Mutzig Lite 33cl', 'Primus Beer 72cl', 'Amstel Malt 33cl', 'Skol Select 33cl', 
+  'Skol Malt 50cl', 'Virunga Beer 50cl', 'Inyange Juice 1L', 'Coca-Cola 300ml', 'Fanta Orange 300ml', 
+  'Sprite 300ml', 'Vitalo Soft Drink 300ml', 'Kinazi Cassava Beverage', 'Johnnie Walker Black Label 750ml', 'Hennessy VS 700ml',
+
+  // Row 2: Clothing, Personal Items & Tech
+  'Kitenge Fabric (3 Pieces)', 'Traditional Umushanana Set', 'Tailored Suit (Gikondo Made)', 'Men\'s Leather Shoes', 'High Heel Shoes', 
+  'Rwanda National Football Team Jersey', 'Traditional Agaseke Basket (Large)', 'Leather Handbag', 'Unisex Denim Jeans', 'Cotton T-Shirt', 
+  'Winter Jacket', 'School Uniform Set', 'Local Rubber Sandals (Inkweto z\'Ibiti)', 'Sports Running Shoes', 'African Print Dress', 
+  'iPhone 15 Pro Max 256GB', 'Samsung Galaxy S24 Ultra', 'MacBook Pro 16-inch M3', 'Dell XPS 15 Laptop', 'LG 65-inch 4K Smart TV', 
+  'Samsung French Door Refrigerator', 'Bosch Front-Load Washing Machine', 'Sony PlayStation 5', 'JBL Boombox 3 Bluetooth Speaker', 'Starlink Satellite Internet Kit', 
+  'Solar Panel System 500W', 'Canal+ HD Decoder & Dish', 'iPad Pro 12.9-inch', 'HP LaserJet Printer', 'Inverter Generator 3kW', 
+  'Campari Bitter 1L', 'Gordon\'s Dry Gin 750ml', 'Kanyanga (Traditional Spirit) 1L', 'Local Banana Wine (Urwagwa) 5L', 'Jack Daniel\'s Tennessee Whiskey 750ml',
+
+  // Row 3: Luxury Goods, Vehicles, Real Estate & Building Materials
+  'Toyota Land Cruiser V8 (Used/New)', 'Toyota RAV4 2020 Model', 'Toyota Hilux Double Cab 4x4', 'Mercedes-Benz G-Wagon (G63 AMG)', 'BMW X5 xDrive', 
+  'Ampersand Electric Motorcycle', 'TVS HLX 150 Motorcycle', 'Yamaha AG100 Farm Bike', 'Plot of Land in Rebero (500 sqm)', '4-Bedroom Villa in Nyarutarama', 
+  'Commercial Space Rent in KBC (Per Month)', 'Rolex Submariner Watch', 'Motorboat for Lake Kivu', 'Caterpillar Excavator (320 Series)', 'Luxury Safari Tent Package', 
+  'Cimerwa Cement 50kg', 'Iron Sheets (Amabati) 30 Gauge', 'Steel Rebar (N12) 12mm', 'River Sand 1 Truck (10T)', 'Red Bricks 1000 Pieces', 
+  'Paints (Sadolin 20L)', 'Solar Water Heater 200L', 'Water Tank 5000L (Roto)', 'Ceramic Floor Tiles (1 Sqm)', 'Plywood Sheet 18mm', 
+  'Electric Water Heater 80L', 'Paving Blocks (1 Sqm)', 'Aluminum Window Frame', 'Wooden Door (Mahogany)', 'Safety Boots'
+];
 
 export default function InventoryScreen() {
   const { inventory, addProduct, updateStock } = useAppContext();
